@@ -1,3 +1,9 @@
+# Run Server Locally
+
+```bash
+ENVIRONMENT=dev go run cmd/main.go
+```
+
 # Equivalent gRPC and cURL commands:
 
 ```bash
