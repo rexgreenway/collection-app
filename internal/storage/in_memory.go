@@ -3,7 +3,7 @@ package storage
 import (
 	"errors"
 
-	"github.com/RexGreenway/CollectionApp/internal/entities"
+	"github.com/rexgreenway/collection-app/internal/entities"
 )
 
 const InMemory StorageType = "in_memory"
@@ -14,17 +14,22 @@ type inMemoryStorage struct {
 }
 
 // NewInMemoryStorage ???
-func NewInMemoryStorage() (inMemoryStorage, error) {
+func newInMemoryStorage() (inMemoryStorage, error) {
 	return inMemoryStorage{store: map[string]entities.Collection{}}, nil
 }
 
 // CreateCollection ???
-func (s inMemoryStorage) CreateCollection(collection entities.Collection) error {
+func (s inMemoryStorage) CreateCollection(collection entities.Collection) (entities.Collection, error) {
 	if _, ok := s.store[collection.ID]; ok {
-		return errors.New("collection already exists")
+		return entities.Collection{}, errors.New("collection already exists")
 	}
 	s.store[collection.ID] = collection
-	return nil
+	return collection, nil
+}
+
+// ListCollections ???
+func (s inMemoryStorage) ListCollections() (map[string]entities.Collection, error) {
+	return s.store, nil
 }
 
 // GetCollection ???
@@ -37,7 +42,8 @@ func (s inMemoryStorage) GetCollection(collectionID string) (entities.Collection
 }
 
 // UpdateCollection ???
-func (s inMemoryStorage) UpdateCollection(collection entities.Collection) error {
+// Change this to a DIFF method???
+func (s *inMemoryStorage) UpdateCollection(collection entities.Collection) error {
 	if _, ok := s.store[collection.ID]; !ok {
 		return errors.New("collection not found")
 	}
@@ -46,7 +52,7 @@ func (s inMemoryStorage) UpdateCollection(collection entities.Collection) error 
 }
 
 // DeleteCollection ???
-func (s inMemoryStorage) DeleteCollection(collectionID string) error {
+func (s *inMemoryStorage) DeleteCollection(collectionID string) error {
 	if _, ok := s.store[collectionID]; !ok {
 		return errors.New("collection not found")
 	}

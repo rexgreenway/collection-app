@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/RexGreenway/CollectionApp/internal/entities"
+	"github.com/rexgreenway/collection-app/internal/entities"
 )
 
 const OS StorageType = "os"

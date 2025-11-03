@@ -2,12 +2,9 @@ package logger
 
 import (
 	"fmt"
-	"sync"
 
 	"go.uber.org/zap"
 )
-
-var once sync.Once
 
 var logger *zap.SugaredLogger
 
@@ -16,30 +13,22 @@ type Config struct {
 }
 
 // FromConfig returns sugared logger provided with a configuration.
-func FromConfig(config *Config) (*zap.SugaredLogger, error) {
-	var err error
+func FromConfig(config *Config) *zap.SugaredLogger {
+	var l *zap.Logger
 
-	// Create and set package scoped logger
-	once.Do(func() {
-		var l *zap.Logger
-
-		switch config.Environment {
-		case "dev":
-			l, err = zap.NewDevelopment()
-
-		case "prod":
-			l, err = zap.NewProduction()
-		default:
-			err = fmt.Errorf("no such environment %q", config.Environment)
-		}
-
-		logger = l.Sugar()
-	})
-
-	// Error Handling
-	if err != nil {
-		return nil, err
+	switch config.Environment {
+	case "dev":
+		l = zap.Must(zap.NewDevelopment())
+	case "prod":
+		l = zap.Must(zap.NewProduction())
+	default:
+		panic(fmt.Sprintf("no such environment %q", config.Environment))
 	}
 
-	return logger, nil
+	logger = l.Sugar()
+
+	// Flush logs before exit
+	defer logger.Sync()
+
+	return logger
 }

@@ -1,20 +1,27 @@
 package main
 
 import (
-	"github.com/RexGreenway/CollectionApp/internal/logger"
+	"os"
+
+	"github.com/rexgreenway/collection-app/internal/logger"
+	"github.com/rexgreenway/collection-app/internal/server"
 )
 
 func main() {
+	// Establish Application Environment
+	environment := os.Getenv("ENVIRONMENT")
+
 	// Establish Logging
-	logger, err := logger.FromConfig(&logger.Config{Environment: "dev"})
-	if err != nil {
-		panic(err)
-	}
+	// Use logger through dependency injection!!!
+	logger := logger.FromConfig(&logger.Config{Environment: environment})
 
 	logger.Info("starting collection application")
 
-	// - Create Application
 	// - Start gRPC Server
+	go server.StartServer(logger)
+
+	// Start HTTP Gateway
+	server.StartHTTPGateway(logger)
 
 	logger.Info("exiting collection application")
 }

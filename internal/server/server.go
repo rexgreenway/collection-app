@@ -2,60 +2,40 @@ package server
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"net"
+	"net/http"
 
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/RexGreenway/CollectionApp/internal/genproto"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+
+	"github.com/rexgreenway/collection-app/internal/gen/collection"
 )
 
 type collectionService struct {
-	genproto.UnimplementedCollectionServiceServer
-}
+	collection.UnimplementedCollectionServiceServer
 
-func (s *collectionService) ListCollections(
-	req *genproto.ListCollectionsRequest,
-	stream genproto.CollectionService_ListCollectionsServer,
-) error {
-	return nil
+	logger *zap.SugaredLogger
 }
 
 func (s *collectionService) GetCollection(
 	ctx context.Context,
-	req *genproto.GetCollectionRequest,
-) (*genproto.Collection, error) {
-	return &genproto.Collection{
-		Items: []*genproto.Item{
-			{
-				Id:   "tid-1",
-				Name: "item-1",
-				Info: map[string]string{"dir": "nolan", "year": "2020"},
-			},
-			{
-				Id:   "tid-2",
-				Name: "item-2",
-				Info: map[string]string{"dir": "tara", "year": "111§"},
-			},
-		},
+	req *collection.IdMessage,
+) (*collection.Collection, error) {
+	s.logger.Debugf("GetCollection called with id: %q", req.GetId())
+
+	return &collection.Collection{
+		Id:   req.Id,
+		Name: "Test Name",
 	}, nil
 }
 
-func (s *collectionService) AddItem(
-	ctx context.Context,
-	item *genproto.Item,
-) (*genproto.Item, error) {
-	fmt.Println("hit AddItem method")
-
-	return &genproto.Item{}, nil
-}
-
-func StartServer() error {
+func StartServer(logger *zap.SugaredLogger) error {
 	lis, err := net.Listen("tcp", "localhost:50100")
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		logger.Fatalf("failed to listen: %v", err)
 	}
 
 	var opts []grpc.ServerOption
@@ -64,12 +44,32 @@ func StartServer() error {
 	// Register reflection service on gRPC server.
 	reflection.Register(grpcServer)
 
-	genproto.RegisterCollectionServiceServer(
+	collection.RegisterCollectionServiceServer(
 		grpcServer,
-		&collectionService{},
+		&collectionService{logger: logger},
 	)
 
-	fmt.Println("starting grpc server on 50100")
+	logger.Info("starting grpc server on 50100")
 
 	return grpcServer.Serve(lis)
+}
+
+func StartHTTPGateway(logger *zap.SugaredLogger) error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	address := ":8089"
+
+	mux := runtime.NewServeMux()
+
+	collection.RegisterCollectionServiceHandlerServer(ctx, mux, &collectionService{logger: logger})
+
+	s := &http.Server{
+		Addr:    address,
+		Handler: mux,
+	}
+
+	logger.Info("starting http gateway on 8089")
+
+	return s.ListenAndServe()
 }
