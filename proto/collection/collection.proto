@@ -12,7 +12,33 @@ message Empty {}
 
 message IdMessage {
   string id = 1;
+  QueryParams params = 2;
 }
+
+// ANY PARAMS NOT SENT IN ROUTE PATH will be the query params
+message RequestWithQueryParams {
+  string id = 1;
+  string name = 2;
+
+  // Query Params
+  int32 page = 11;
+  int32 size = 12;
+}
+
+// Can also put generic params into their own message
+message RequestWithQueryParamsV2 {
+  string id = 1;
+  string name = 2;
+
+  QueryParams params = 11;
+}
+
+message QueryParams {
+  int32 page = 1;
+  int32 size = 2;
+}
+
+// USEFUL: https://learn.microsoft.com/en-us/aspnet/core/grpc/json-transcoding-binding?view=aspnetcore-9.0
 
 // ------- RESPONSE TYPES -------
 
@@ -25,7 +51,7 @@ message Collection {
 // ------- SERVICES -------
 
 service CollectionService {
-  // // GET /collections
+  // GET /collections
   // rpc ListCollections(Empty) returns (stream Collection) {
   //   option (google.api.http) = {get: "/v1/collections"};
   // }

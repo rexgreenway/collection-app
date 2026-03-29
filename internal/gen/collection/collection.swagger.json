@@ -40,6 +40,12 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "params.text",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -60,6 +66,15 @@
         }
       },
       "title": "Basic Collection"
+    },
+    "collectionQueryParams": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      },
+      "title": "ANY PARAMS NOT SENT IN ROUTE PATH"
     },
     "protobufAny": {
       "type": "object",

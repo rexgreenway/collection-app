@@ -24,6 +24,8 @@ func (s *collectionService) GetCollection(
 	ctx context.Context,
 	req *collection.IdMessage,
 ) (*collection.Collection, error) {
+	s.logger.Debugf("GetCollection called with id: %q", req)
+
 	s.logger.Debugf("GetCollection called with id: %q", req.GetId())
 
 	return &collection.Collection{
@@ -31,6 +33,26 @@ func (s *collectionService) GetCollection(
 		Name: "Test Name",
 	}, nil
 }
+
+// func (s *collectionService) ListCollections(
+// 	req *collection.Empty,
+// 	stream collection.CollectionService_ListCollectionsServer,
+// ) error {
+// 	s.logger.Debugf("ListCollections called")
+
+// 	collections := []*collection.Collection{
+// 		{Id: "1", Name: "Test Collection 1"},
+// 		{Id: "2", Name: "Test Collection 2"},
+// 	}
+
+// 	for _, col := range collections {
+// 		if err := stream.Send(col); err != nil {
+// 			return err
+// 		}
+// 	}
+
+// 	return nil
+// }
 
 func StartServer(logger *zap.SugaredLogger) error {
 	lis, err := net.Listen("tcp", "localhost:50100")
