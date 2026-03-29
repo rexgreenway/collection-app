@@ -13,3 +13,7 @@ grpcurl -plaintext -d '{"id": "hello"}' localhost:50100 collection.CollectionSer
 ```bash
 curl -X GET localhost:8089/v1/collections/hello
 ```
+
+# GRPC Gateway README:
+
+https://github.com/grpc-ecosystem/grpc-gateway#readme
