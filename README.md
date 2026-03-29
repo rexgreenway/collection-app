@@ -23,3 +23,4 @@ https://github.com/grpc-ecosystem/grpc-gateway#readme
 ## Tutorial:
 
 https://www.speakeasy.com/openapi/frameworks/grpc-gateway
+https://github.com/speakeasy-api/speakeasy-grpc-gateway-example
