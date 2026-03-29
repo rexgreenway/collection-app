@@ -14,6 +14,12 @@ grpcurl -plaintext -d '{"id": "hello"}' localhost:50100 collection.CollectionSer
 curl -X GET localhost:8089/v1/collections/hello
 ```
 
-# GRPC Gateway README:
+# Helpful Docs:
+
+## GRPC Gateway README:
 
 https://github.com/grpc-ecosystem/grpc-gateway#readme
+
+## Tutorial:
+
+https://www.speakeasy.com/openapi/frameworks/grpc-gateway
