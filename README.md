@@ -20,6 +20,15 @@ curl -X GET localhost:8089/v1/collections/hello
 
 https://github.com/grpc-ecosystem/grpc-gateway#readme
 
+## Google Annotations Info:
+
+https://github.com/googleapis/googleapis/blob/master/google/api/README.md
+
+## Google gRPC Transcoding Docs
+
+https://docs.cloud.google.com/endpoints/docs/grpc/transcoding
+https://github.com/googleapis/googleapis/blob/7ae842846c3fa71ea909e6ad04d3d0b9b06756e9/google/api/http.proto#L43
+
 ## Tutorial:
 
 https://www.speakeasy.com/openapi/frameworks/grpc-gateway

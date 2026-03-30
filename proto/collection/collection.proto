@@ -3,6 +3,7 @@ syntax = "proto3";
 package collection;
 
 import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
 
 option go_package = "github.com/rexgreenway/collection-app/internal/gen/collection";
 
@@ -17,7 +18,7 @@ message IdMessage {
 
 // ANY PARAMS NOT SENT IN ROUTE PATH will be the query params
 message RequestWithQueryParams {
-  string id = 1;
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
   string name = 2;
 
   // Query Params

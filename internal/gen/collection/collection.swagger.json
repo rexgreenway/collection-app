@@ -42,10 +42,18 @@
             "type": "string"
           },
           {
-            "name": "params.text",
+            "name": "params.page",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "params.size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
@@ -70,11 +78,15 @@
     "collectionQueryParams": {
       "type": "object",
       "properties": {
-        "text": {
-          "type": "string"
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32"
         }
-      },
-      "title": "ANY PARAMS NOT SENT IN ROUTE PATH"
+      }
     },
     "protobufAny": {
       "type": "object",
