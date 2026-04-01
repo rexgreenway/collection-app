@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -14,10 +15,7 @@ import (
 )
 
 // StartHTTPServer ???
-func StartHTTPServer(logger *zap.SugaredLogger, store storage.Store) error {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
+func StartHTTPServer(ctx context.Context, logger *zap.SugaredLogger, store storage.Store) error {
 	// Gateway Mux from grpc-gateway
 	gwMux := runtime.NewServeMux()
 
@@ -34,7 +32,29 @@ func StartHTTPServer(logger *zap.SugaredLogger, store storage.Store) error {
 		v1.Any("/collections/*path", handler)
 	}
 
-	logger.Info("starting http gateway on 8089")
+	// Create an http.Server instead of using router.Run()
+	srv := &http.Server{
+		Addr:    ":8089",
+		Handler: router,
+	}
 
-	return router.Run(":8089")
+	// Goroutine watches for context cancellation
+	go func() {
+		<-ctx.Done()
+		logger.Info("shutting down http server...")
+		// Give in-flight requests 5 seconds to finish
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := srv.Shutdown(shutdownCtx); err != nil {
+			logger.Errorf("http server forced shutdown: %v", err)
+		}
+	}()
+
+	logger.Info("starting http gateway on :8089")
+
+	// ListenAndServe returns http.ErrServerClosed after Shutdown() completes — that's expected
+	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		return err
+	}
+	return nil
 }

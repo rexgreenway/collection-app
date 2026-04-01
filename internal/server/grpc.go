@@ -1,6 +1,8 @@
 package server
 
 import (
+	"context"
+	"fmt"
 	"net"
 
 	"go.uber.org/zap"
@@ -12,11 +14,11 @@ import (
 	"github.com/rexgreenway/collection-app/internal/storage"
 )
 
-// START GRPC SERVER
-func StartGrpcServer(logger *zap.SugaredLogger, store storage.Store) error {
+// StartGrpcServer
+func StartGrpcServer(ctx context.Context, logger *zap.SugaredLogger, store storage.Store) error {
 	lis, err := net.Listen("tcp", "localhost:50100")
 	if err != nil {
-		logger.Fatalf("failed to listen: %v", err)
+		return fmt.Errorf("failed to listen: %v", err)
 	}
 
 	var opts []grpc.ServerOption
@@ -28,7 +30,14 @@ func StartGrpcServer(logger *zap.SugaredLogger, store storage.Store) error {
 	// Register CollectionService with the gRPC server
 	pb.RegisterCollectionServiceServer(grpcServer, collection.NewServer(logger, store))
 
-	logger.Info("starting grpc server on 50100")
+	// Goroutine watches for context cancellation
+	go func() {
+		<-ctx.Done()
+		logger.Info("shutting down grpc server...")
+		grpcServer.GracefulStop() // stops accepting new RPCs, waits for in-flight ones to finish
+	}()
+
+	logger.Info("starting grpc server on :50100")
 
 	return grpcServer.Serve(lis)
 }

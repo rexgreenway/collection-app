@@ -20,6 +20,8 @@ type collectionServer struct {
 	logger *zap.SugaredLogger
 
 	store storage.Store
+
+	cancel context.CancelFunc
 }
 
 func (s *collectionServer) ListCollections(

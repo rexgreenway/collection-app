@@ -27,8 +27,5 @@ func FromConfig(config *Config) (*zap.SugaredLogger, error) {
 
 	logger = l.Sugar()
 
-	// Flush logs before exit
-	defer logger.Sync()
-
 	return logger, nil
 }
