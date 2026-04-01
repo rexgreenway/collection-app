@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rexgreenway/collection-app/internal/logger"
 	"github.com/rexgreenway/collection-app/internal/server"
 	"github.com/rexgreenway/collection-app/internal/storage"
@@ -25,6 +26,14 @@ func main() {
 
 	logger.Info("Starting Collection Application")
 
+	logger.Info("Setting Up Environment")
+	// Set if Gin is Prod or not?
+	if environment == "prod" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	// Set up persistent Store
+	// Read this from a env var at some point
 	storeType := storage.InMemory
 	store, err := storage.StorageManager(storeType)
 	if err != nil {
@@ -32,14 +41,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Establish Context
+	// Establish Context & Err Group
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	// Setup Err Group
 	g, ctx := errgroup.WithContext(ctx)
 
-	// Start gRPC Server inside a GO Routine
+	// Start Servers inside go routines
 	g.Go(func() error {
 		return server.StartGrpcServer(ctx, logger, store)
 	})
@@ -48,7 +56,6 @@ func main() {
 		return server.StartHTTPServer(ctx, logger, store)
 	})
 
-	// Wait for signal or error
 	if err := g.Wait(); err != nil {
 		logger.Errorf("Application exiting due to error: %v", err)
 	}

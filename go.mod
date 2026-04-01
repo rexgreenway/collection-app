@@ -3,6 +3,7 @@ module github.com/rexgreenway/collection-app
 go 1.25.3
 
 require (
+	github.com/gin-contrib/zap v1.1.7
 	github.com/gin-gonic/gin v1.12.0
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3

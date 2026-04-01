@@ -7,12 +7,13 @@ import (
 	"net/http"
 	"time"
 
+	ginzap "github.com/gin-contrib/zap"
+	"github.com/gin-gonic/gin"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/gin-gonic/gin"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	pb "github.com/rexgreenway/collection-app/internal/gen/collection"
 	"github.com/rexgreenway/collection-app/internal/services/collection"
 	"github.com/rexgreenway/collection-app/internal/storage"
@@ -55,13 +56,22 @@ func StartHTTPServer(ctx context.Context, logger *zap.SugaredLogger, store stora
 	pb.RegisterCollectionServiceHandlerServer(ctx, gwMux, collection.NewServer(logger, store))
 
 	// Create GIN router with v1 prefix group and attach the
-	router := gin.Default()
+	router := gin.New()
+
+	// Desugar back to *zap.Logger for the middleware
+	zapLogger := logger.Desugar()
+	router.Use(ginzap.Ginzap(zapLogger, time.RFC3339, true))
+	router.Use(ginzap.RecoveryWithZap(zapLogger, true))
+
 	v1 := router.Group("/v1")
 	{
 		// gRPC-gateway handles collection routes (prefix is stripped for sending to gwMux)
 		handler := gin.WrapH(http.StripPrefix("/v1", gwMux))
 		v1.Any("/collections", handler)
 		v1.Any("/collections/*path", handler)
+
+		// Add a /v1/docs route that serves the API docs
+		// v1.GET("/docs", swaggerHandler)
 	}
 
 	// Create an http.Server instead of using router.Run()
