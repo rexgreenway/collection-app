@@ -71,7 +71,7 @@ func (s *osStorage) ListCollections() (map[string]entities.Collection, error) {
 // CreateCollection ???
 func (s *osStorage) CreateCollection(collection entities.Collection) (entities.Collection, error) {
 	if _, ok := s.store[collection.ID]; ok {
-		return entities.Collection{}, ErrAlreadyExists
+		return entities.Collection{}, ErrCollectionAlreadyExists
 	}
 
 	// Store & write

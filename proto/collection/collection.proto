@@ -4,61 +4,69 @@ package collection;
 
 import "google/api/annotations.proto";
 import "google/api/field_behavior.proto";
+import "google/protobuf/empty.proto";
 
 option go_package = "github.com/rexgreenway/collection-app/internal/gen/collection";
 
+// ------- BASIC TYPES -------
+
+message Collection {
+  string id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+  string name = 2;
+}
+
 // ------- REQUEST TYPES -------
 
-message Empty {}
-
-message IdMessage {
-  string id = 1;
-  QueryParams params = 2;
+message Id {
+  string id = 1 [(google.api.field_behavior) = IDENTIFIER];
 }
 
-// ANY PARAMS NOT SENT IN ROUTE PATH will be the query params
-message RequestWithQueryParams {
-  string id = 1 [(google.api.field_behavior) = REQUIRED];
-  string name = 2;
-
-  // Query Params
-  int32 page = 11;
-  int32 size = 12;
+message CreateCollectionRequest {
+  Collection collection = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
-// Can also put generic params into their own message
-message RequestWithQueryParamsV2 {
-  string id = 1;
-  string name = 2;
+message UpdateCollectionRequest {
+  string id = 1 [(google.api.field_behavior) = IDENTIFIER];
 
-  QueryParams params = 11;
+  Collection collection = 2 [(google.api.field_behavior) = REQUIRED];
 }
-
-message QueryParams {
-  int32 page = 1;
-  int32 size = 2;
-}
-
-// USEFUL: https://learn.microsoft.com/en-us/aspnet/core/grpc/json-transcoding-binding?view=aspnetcore-9.0
 
 // ------- RESPONSE TYPES -------
 
-// Basic Collection
-message Collection {
-  string id = 1;
-  string name = 2;
+message GetCollectionResponse {
+  Collection data = 1;
+}
+
+message ListCollectionsResponse {
+  repeated Collection data = 1 [(google.api.field_behavior) = UNORDERED_LIST];
 }
 
 // ------- SERVICES -------
 
 service CollectionService {
-  // GET /collections
-  // rpc ListCollections(Empty) returns (stream Collection) {
-  //   option (google.api.http) = {get: "/v1/collections"};
-  // }
+  rpc ListCollections(google.protobuf.Empty) returns (ListCollectionsResponse) {
+    option (google.api.http) = {get: "/collections"};
+  }
 
-  // GET /collections/<id>
-  rpc GetCollection(IdMessage) returns (Collection) {
-    option (google.api.http) = {get: "/v1/collections/{id}"};
+  rpc CreateCollection(CreateCollectionRequest) returns (GetCollectionResponse) {
+    option (google.api.http) = {
+      post: "/collections"
+      body: "collection"
+    };
+  }
+
+  rpc GetCollection(Id) returns (GetCollectionResponse) {
+    option (google.api.http) = {get: "/collections/{id}"};
+  }
+
+  rpc UpdateCollection(UpdateCollectionRequest) returns (GetCollectionResponse) {
+    option (google.api.http) = {
+      patch: "/collections/{id}"
+      body: "collection"
+    };
+  }
+
+  rpc DeleteCollection(Id) returns (google.protobuf.Empty) {
+    option (google.api.http) = {delete: "/collections/{id}"};
   }
 }

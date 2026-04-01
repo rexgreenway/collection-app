@@ -13,7 +13,7 @@ type Config struct {
 }
 
 // FromConfig returns sugared logger provided with a configuration.
-func FromConfig(config *Config) *zap.SugaredLogger {
+func FromConfig(config *Config) (*zap.SugaredLogger, error) {
 	var l *zap.Logger
 
 	switch config.Environment {
@@ -22,7 +22,7 @@ func FromConfig(config *Config) *zap.SugaredLogger {
 	case "prod":
 		l = zap.Must(zap.NewProduction())
 	default:
-		panic(fmt.Sprintf("no such environment %q", config.Environment))
+		return nil, fmt.Errorf("no such environment %q", config.Environment)
 	}
 
 	logger = l.Sugar()
@@ -30,5 +30,5 @@ func FromConfig(config *Config) *zap.SugaredLogger {
 	// Flush logs before exit
 	defer logger.Sync()
 
-	return logger
+	return logger, nil
 }

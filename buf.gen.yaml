@@ -17,7 +17,7 @@ plugins:
       - paths=source_relative
       - allow_repeated_fields_in_body=true
   - local: protoc-gen-openapiv2
-    out: internal/gen
+    out: swagger
     opt:
       - allow_repeated_fields_in_body=true
 inputs:

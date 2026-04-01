@@ -1,16 +1,11 @@
 package storage
 
 import (
-	"errors"
-
 	"github.com/rexgreenway/collection-app/internal/entities"
 )
 
-var ErrAlreadyExists = errors.New("collection already exists")
-
 // Storage defines the methodologies for fetching and editing collection data.
-type Storage interface {
-	// COLLECTION LEVEL
+type Store interface {
 	// ListCollections ???
 	ListCollections() (map[string]entities.Collection, error)
 
@@ -20,6 +15,9 @@ type Storage interface {
 	// GetCollection looks up and returns a collection from storage given an ID.
 	GetCollection(collectionID string) (entities.Collection, error)
 
-	// // DeleteCollection ???
-	// DeleteCollection(collectionID string) error
+	// UpdateCollection ???
+	UpdateCollection(collectionID string, collection entities.Collection) (entities.Collection, error)
+
+	// DeleteCollection ???
+	DeleteCollection(collectionID string) error
 }

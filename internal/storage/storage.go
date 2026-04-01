@@ -1,20 +1,29 @@
 package storage
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
-// StorageType defines
+// EXCEPTIONS
+var (
+	ErrCollectionNotFound      = errors.New("collection not found")
+	ErrCollectionAlreadyExists = errors.New("collection already exists")
+)
+
+// StorageType defines ???
 type StorageType string
 
-// StorageManager returns the Storage implementation
-func StorageManager(impl StorageType) (Storage, error) {
+// StorageManager returns the ???
+func StorageManager(impl StorageType) (Store, error) {
 	switch impl {
 	case InMemory:
 		return newInMemoryStorage()
 
-	case OS:
-		return newOSStorage()
+	// case OS:
+	// 	return newOSStorage()
 
 	default:
-		return nil, fmt.Errorf("no such storage implementation %q", impl)
+		return nil, fmt.Errorf("Storage implementation does not exist %q", impl)
 	}
 }
