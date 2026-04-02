@@ -2,6 +2,10 @@ version: v2
 managed:
   enabled: true
 plugins:
+  # TS / Node 
+  - remote: buf.build/bufbuild/es:v2.11.0
+    out: web/packages/gen
+  # Go
   - remote: buf.build/protocolbuffers/go:v1.35.1
     out: internal/gen
     opt:
@@ -11,6 +15,7 @@ plugins:
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
+  # grpc-gateway
   - local: protoc-gen-grpc-gateway
     out: internal/gen
     opt:
