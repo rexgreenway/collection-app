@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package collection;
+package v1.collection;
 
 import "google/api/annotations.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/rexgreenway/collection-app/internal/gen/collection";
+option go_package = "github.com/rexgreenway/collection-app/internal/gen/v1/collection";
 
 // ------- BASIC TYPES -------
 
