@@ -2,7 +2,7 @@ package collection
 
 import (
 	"github.com/rexgreenway/collection-app/internal/entities"
-	pb "github.com/rexgreenway/collection-app/internal/gen/collection"
+	pb "github.com/rexgreenway/collection-app/internal/gen/v1/collection"
 )
 
 func collectionToProto(c entities.Collection) *pb.Collection {

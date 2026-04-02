@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	pb "github.com/rexgreenway/collection-app/internal/gen/collection"
+	pb "github.com/rexgreenway/collection-app/internal/gen/v1/collection"
 	"github.com/rexgreenway/collection-app/internal/services/collection"
 	"github.com/rexgreenway/collection-app/internal/storage"
 )

@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	pb "github.com/rexgreenway/collection-app/internal/gen/collection"
+	pb "github.com/rexgreenway/collection-app/internal/gen/v1/collection"
 	"github.com/rexgreenway/collection-app/internal/storage"
 )
 
