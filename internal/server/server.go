@@ -33,6 +33,11 @@ func StartGrpcServer(ctx context.Context, logger *zap.SugaredLogger, store stora
 	reflection.Register(grpcServer)
 
 	// Register CollectionService with the gRPC server
+	// This registers the implementation of the pb.CollectionServiceServer with the
+	// grpcServer created above.
+	// This means that if I want to create a new implementation of the Collection Server
+	// Maybe create a new version in the future... I can create a whole new implementation
+	// swap it out!
 	pb.RegisterCollectionServiceServer(grpcServer, collection.NewServer(logger, store))
 
 	// Goroutine watches for context cancellation

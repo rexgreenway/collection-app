@@ -20,11 +20,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CollectionService_ListCollections_FullMethodName  = "/collection.CollectionService/ListCollections"
-	CollectionService_CreateCollection_FullMethodName = "/collection.CollectionService/CreateCollection"
-	CollectionService_GetCollection_FullMethodName    = "/collection.CollectionService/GetCollection"
-	CollectionService_UpdateCollection_FullMethodName = "/collection.CollectionService/UpdateCollection"
-	CollectionService_DeleteCollection_FullMethodName = "/collection.CollectionService/DeleteCollection"
+	CollectionService_ListCollections_FullMethodName  = "/v1.collection.CollectionService/ListCollections"
+	CollectionService_CreateCollection_FullMethodName = "/v1.collection.CollectionService/CreateCollection"
+	CollectionService_GetCollection_FullMethodName    = "/v1.collection.CollectionService/GetCollection"
+	CollectionService_UpdateCollection_FullMethodName = "/v1.collection.CollectionService/UpdateCollection"
+	CollectionService_DeleteCollection_FullMethodName = "/v1.collection.CollectionService/DeleteCollection"
 )
 
 // CollectionServiceClient is the client API for CollectionService service.
@@ -243,7 +243,7 @@ func _CollectionService_DeleteCollection_Handler(srv interface{}, ctx context.Co
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var CollectionService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "collection.CollectionService",
+	ServiceName: "v1.collection.CollectionService",
 	HandlerType: (*CollectionServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

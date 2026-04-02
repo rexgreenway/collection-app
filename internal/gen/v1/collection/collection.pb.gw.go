@@ -219,7 +219,7 @@ func RegisterCollectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/collection.CollectionService/ListCollections", runtime.WithHTTPPathPattern("/collections"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.collection.CollectionService/ListCollections", runtime.WithHTTPPathPattern("/collections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -239,7 +239,7 @@ func RegisterCollectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/collection.CollectionService/CreateCollection", runtime.WithHTTPPathPattern("/collections"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.collection.CollectionService/CreateCollection", runtime.WithHTTPPathPattern("/collections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -259,7 +259,7 @@ func RegisterCollectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/collection.CollectionService/GetCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.collection.CollectionService/GetCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -279,7 +279,7 @@ func RegisterCollectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/collection.CollectionService/UpdateCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.collection.CollectionService/UpdateCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -299,7 +299,7 @@ func RegisterCollectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/collection.CollectionService/DeleteCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.collection.CollectionService/DeleteCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -357,7 +357,7 @@ func RegisterCollectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/collection.CollectionService/ListCollections", runtime.WithHTTPPathPattern("/collections"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.collection.CollectionService/ListCollections", runtime.WithHTTPPathPattern("/collections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -374,7 +374,7 @@ func RegisterCollectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/collection.CollectionService/CreateCollection", runtime.WithHTTPPathPattern("/collections"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.collection.CollectionService/CreateCollection", runtime.WithHTTPPathPattern("/collections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -391,7 +391,7 @@ func RegisterCollectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/collection.CollectionService/GetCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.collection.CollectionService/GetCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -408,7 +408,7 @@ func RegisterCollectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/collection.CollectionService/UpdateCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.collection.CollectionService/UpdateCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -425,7 +425,7 @@ func RegisterCollectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/collection.CollectionService/DeleteCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.collection.CollectionService/DeleteCollection", runtime.WithHTTPPathPattern("/collections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

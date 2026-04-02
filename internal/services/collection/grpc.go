@@ -15,6 +15,8 @@ import (
 )
 
 type collectionServer struct {
+	// This adds forward compatibility to this
+	// implementation of the server
 	pb.UnimplementedCollectionServiceServer
 
 	logger *zap.SugaredLogger
