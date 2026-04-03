@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { RestClient } from "./api/fetch";
+
 import type { Collection } from "@collection-app/gen/v1";
+
+// import collectionAppLogo from "./assets/collection-app-v1.svg";
 
 function App() {
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -19,9 +22,12 @@ function App() {
 
   return (
     <main>
+      {/* <img src={collectionAppLogo} alt="Collection App" /> */}
       <h1>Collections</h1>
       <button onClick={listEm}>Get Em.</button>
-      {collections.map(c => <p key={c.id}>{c.name}</p>)}
+      {collections.map((c) => (
+        <p key={c.id}>{c.name}</p>
+      ))}
     </main>
   );
 }
