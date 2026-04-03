@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package v1.collection;
+
+import "google/api/field_behavior.proto";
+import "v1/collection/requests.proto";
+import "v1/collection/types.proto";
+
+option go_package = "github.com/rexgreenway/collection-app/internal/gen/v1/collection";
+
+// ------- Collections -------
+
+message GetCollectionResponse {
+  Collection data = 1;
+}
+
+message ListCollectionsResponse {
+  repeated Collection data = 1 [(google.api.field_behavior) = UNORDERED_LIST];
+
+  PaginationParams pagination = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+// ------- Items -------
+
+message GetItemResponse {
+  Item data = 1;
+}
+
+message ListItemsResponse {
+  repeated Item data = 1 [(google.api.field_behavior) = UNORDERED_LIST];
+
+  PaginationParams pagination = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+}

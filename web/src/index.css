@@ -1,3 +1,77 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* SHOULD USE DIFFERENT FONTS  */
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400&display=swap");
+
+/* RESET UNDERLYING DEFAULTS */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* VARIABLES */
+:root {
+  --background: #54b3c4;
+  --background-translucent: rgb(0, 0, 0, 0.1);
+  --text: black;
+}
+
+[data-theme="dark"] {
+  --background: #281536;
+  --background-translucent: rgb(221, 221, 221, 0.1);
+  --text: #ddd;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --flex-justif: true;
+  }
+}
+
+/* ROOT */
+#root {
+  background-color: var(--background);
+  transition: all 0.2s linear; /* Theme change transition */
+}
+
+/* LAYOUT */
+header,
+main,
+section,
+footer {
+  display: flex;
+  justify-content: center;
+}
+
+/* TEXT FONTS / STYLING */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0;
+
+  color: var(--text);
+  font-family: "Bebas Neue", monospace;
+  letter-spacing: 4px;
+}
+
+p,
+a {
+  margin: 0;
+
+  color: var(--text);
+  font:
+    13px "Raleway",
+    sans-serif;
+  text-decoration: none;
+}
+
+span {
+  background-color: var(--text);
+}
+
+svg {
+  display: block;
+  color: var(--text);
+  fill: var(--text);
+}

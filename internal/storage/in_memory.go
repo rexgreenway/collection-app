@@ -1,9 +1,12 @@
 package storage
 
 import (
-	"errors"
+	"maps"
+	"slices"
 
-	"github.com/RexGreenway/CollectionApp/internal/entities"
+	"go.uber.org/zap"
+
+	"github.com/rexgreenway/collection-app/internal/entities"
 )
 
 const InMemory StorageType = "in_memory"
@@ -11,45 +14,64 @@ const InMemory StorageType = "in_memory"
 // inMemoryStorage ???
 type inMemoryStorage struct {
 	store map[string]entities.Collection
+
+	logger *zap.SugaredLogger
 }
 
 // NewInMemoryStorage ???
-func NewInMemoryStorage() (inMemoryStorage, error) {
-	return inMemoryStorage{store: map[string]entities.Collection{}}, nil
+func newInMemoryStorage(logger *zap.SugaredLogger) (*inMemoryStorage, error) {
+	return &inMemoryStorage{store: map[string]entities.Collection{}, logger: logger}, nil
 }
 
 // CreateCollection ???
-func (s inMemoryStorage) CreateCollection(collection entities.Collection) error {
+func (s inMemoryStorage) CreateCollection(collection entities.Collection) (entities.Collection, error) {
 	if _, ok := s.store[collection.ID]; ok {
-		return errors.New("collection already exists")
+		return entities.Collection{}, ErrCollectionAlreadyExists
 	}
 	s.store[collection.ID] = collection
-	return nil
+	return collection, nil
+}
+
+// ListCollections ???
+func (s inMemoryStorage) ListCollections(pagination *entities.Pagination) ([]entities.Collection, error) {
+	total := int32(len(s.store))
+
+	validateTransformPagination(pagination, total)
+
+	result := slices.Collect(maps.Values(s.store))[pagination.Start:pagination.End]
+
+	return result, nil
 }
 
 // GetCollection ???
 func (s inMemoryStorage) GetCollection(collectionID string) (entities.Collection, error) {
 	collection, ok := s.store[collectionID]
 	if !ok {
-		return entities.Collection{}, errors.New("collection not found")
+		return entities.Collection{}, ErrCollectionNotFound
 	}
+
 	return collection, nil
 }
 
 // UpdateCollection ???
-func (s inMemoryStorage) UpdateCollection(collection entities.Collection) error {
-	if _, ok := s.store[collection.ID]; !ok {
-		return errors.New("collection not found")
+// Change this to a DIFF method???
+func (s *inMemoryStorage) UpdateCollection(id string, collection entities.Collection) (entities.Collection, error) {
+	if _, ok := s.store[id]; !ok {
+		return entities.Collection{}, ErrCollectionNotFound
 	}
+
 	s.store[collection.ID] = collection
-	return nil
+
+	return collection, nil
 }
 
 // DeleteCollection ???
-func (s inMemoryStorage) DeleteCollection(collectionID string) error {
+func (s *inMemoryStorage) DeleteCollection(collectionID string) error {
 	if _, ok := s.store[collectionID]; !ok {
-		return errors.New("collection not found")
+		return ErrCollectionNotFound
 	}
+
 	delete(s.store, collectionID)
+
 	return nil
 }

@@ -1,24 +1,37 @@
-# Collection App
+# Run Server Locally
 
-(In Progress) Full stack application for tracking collections.
+```bash
+ENVIRONMENT=dev go run cmd/main.go
+```
 
-An open source application for tracking collections, be that Comic Books,
-Trading Cards, Films watched, Stamps, or anything else you can think of.
+# Equivalent gRPC and cURL commands:
 
-## Project Goals
+```bash
+grpcurl -plaintext -d '{"id": "hello"}' localhost:50100 collection.CollectionService/GetCollection
+```
 
-- Implement a generic interface for bespoke collectable creation such that users
-can define their own structure for the items they collect. 
-- Hosting and access flexibility; users can self-host the application or access
-a web portal.
-- Present users with dynamic and intelligent statistics about their collections. 
+```bash
+curl -X GET localhost:8089/v1/collections
+curl -X GET localhost:8089/v1/collections/ID_GOES_HERE
+curl -X POST -d '{ "name": "new_collection" }' localhost:8089/v1/collections
+```
 
-## Future Goals
+# Helpful Docs:
 
-- Importing Collection Data: Functionality to import collection statistics from
-3rd party specific collection tracking applications (i.e. LetterBoxd, GoodReads, etc.)
+## GRPC Gateway README:
 
-## Contributing
+https://github.com/grpc-ecosystem/grpc-gateway#readme
 
-The project is still in its early stages and is open to being shaped by the open
-source community; any and all suggestions and contributions are welcomed.
+## Google Annotations Info:
+
+https://github.com/googleapis/googleapis/blob/master/google/api/README.md
+
+## Google gRPC Transcoding Docs
+
+https://docs.cloud.google.com/endpoints/docs/grpc/transcoding
+https://github.com/googleapis/googleapis/blob/7ae842846c3fa71ea909e6ad04d3d0b9b06756e9/google/api/http.proto#L43
+
+## Tutorial:
+
+https://www.speakeasy.com/openapi/frameworks/grpc-gateway
+https://github.com/speakeasy-api/speakeasy-grpc-gateway-example

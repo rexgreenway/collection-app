@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package v1.collection;
+
+import "google/api/field_behavior.proto";
+
+option go_package = "github.com/rexgreenway/collection-app/internal/gen/v1/collection";
+
+// ======= BASIC TYPES =======
+
+message Collection {
+  string id = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (google.api.field_behavior) = OUTPUT_ONLY
+  ];
+  string name = 2;
+}
+
+message Item {
+  string id = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (google.api.field_behavior) = OUTPUT_ONLY
+  ];
+  string name = 2;
+}
