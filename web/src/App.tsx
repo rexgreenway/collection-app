@@ -1,11 +1,17 @@
+import { useTheme } from "./contexts";
+
+import styles from "./App.module.css";
 import { useEffect, useState } from "react";
 import { RestClient } from "./api/fetch";
-
 import type { Collection } from "@collection-app/gen/v1";
 
-// import collectionAppLogo from "./assets/collection-app-v1.svg";
+const App = () => {
+  // THEME CONTEXT
+  const { theme, toggleTheme } = useTheme();
+  const title =
+    theme === "dark" ? "Switch to Light mode" : "Switch to Dark mode";
 
-function App() {
+  // List Collections
   const [collections, setCollections] = useState<Collection[]>([]);
 
   const listEm = () => {
@@ -21,15 +27,34 @@ function App() {
   useEffect(listEm, []);
 
   return (
-    <main>
-      {/* <img src={collectionAppLogo} alt="Collection App" /> */}
-      <h1>Collections</h1>
-      <button onClick={listEm}>Get Em.</button>
-      {collections.map((c) => (
-        <p key={c.id}>{c.name}</p>
-      ))}
-    </main>
+    <div id="app" className={styles.App}>
+      {/* Header */}
+      <header>
+        <h1>Collection App</h1>
+        <button onClick={toggleTheme} title={title}>
+          BUTTON
+        </button>
+      </header>
+
+      {/* List Collections */}
+      <section>
+        <div>
+          <h2>Collections</h2>
+          <button onClick={listEm}>Get Em.</button>
+        </div>
+      </section>
+      {/* THe list of collections itself */}
+      <section>
+        {collections.map((c) => (
+          <p key={c.id}>{c.name}</p>
+        ))}
+      </section>
+
+      <footer>
+        <h3>FOOTER - links - etc...</h3>
+      </footer>
+    </div>
   );
-}
+};
 
 export default App;
