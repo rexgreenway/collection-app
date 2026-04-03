@@ -3,48 +3,15 @@ syntax = "proto3";
 package v1.collection;
 
 import "google/api/annotations.proto";
-import "google/api/field_behavior.proto";
 import "google/protobuf/empty.proto";
+import "v1/collection/requests.proto";
+import "v1/collection/responses.proto";
 
 option go_package = "github.com/rexgreenway/collection-app/internal/gen/v1/collection";
 
-// ------- BASIC TYPES -------
-
-message Collection {
-  string id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
-  string name = 2;
-}
-
-// ------- REQUEST TYPES -------
-
-message Id {
-  string id = 1 [(google.api.field_behavior) = IDENTIFIER];
-}
-
-message CreateCollectionRequest {
-  Collection collection = 1 [(google.api.field_behavior) = REQUIRED];
-}
-
-message UpdateCollectionRequest {
-  string id = 1 [(google.api.field_behavior) = IDENTIFIER];
-
-  Collection collection = 2 [(google.api.field_behavior) = REQUIRED];
-}
-
-// ------- RESPONSE TYPES -------
-
-message GetCollectionResponse {
-  Collection data = 1;
-}
-
-message ListCollectionsResponse {
-  repeated Collection data = 1 [(google.api.field_behavior) = UNORDERED_LIST];
-}
-
-// ------- SERVICES -------
-
 service CollectionService {
-  rpc ListCollections(google.protobuf.Empty) returns (ListCollectionsResponse) {
+  // ------- Collections -------
+  rpc ListCollections(ListCollectionsRequest) returns (ListCollectionsResponse) {
     option (google.api.http) = {get: "/collections"};
   }
 
@@ -55,7 +22,7 @@ service CollectionService {
     };
   }
 
-  rpc GetCollection(Id) returns (GetCollectionResponse) {
+  rpc GetCollection(CollectionId) returns (GetCollectionResponse) {
     option (google.api.http) = {get: "/collections/{id}"};
   }
 
@@ -66,7 +33,41 @@ service CollectionService {
     };
   }
 
-  rpc DeleteCollection(Id) returns (google.protobuf.Empty) {
+  rpc DeleteCollection(CollectionId) returns (google.protobuf.Empty) {
     option (google.api.http) = {delete: "/collections/{id}"};
+  }
+
+  // ------- Items -------
+  rpc ListItems(ListItemsRequest) returns (ListItemsResponse) {
+    option (google.api.http) = {get: "/collections/{collection_id}/items"};
+  }
+
+  rpc CreateItem(CreateItemRequest) returns (GetItemResponse) {
+    option (google.api.http) = {
+      post: "/collections/{collection_id}/items"
+      body: "items"
+    };
+  }
+
+  rpc CreateItems(CreateItemsRequest) returns (ListItemsResponse) {
+    option (google.api.http) = {
+      post: "/collections/{collection_id}/items:batchCreate"
+      body: "items"
+    };
+  }
+
+  rpc GetItem(CollectionItemId) returns (GetItemResponse) {
+    option (google.api.http) = {get: "/collections/{collection_id}/items/{id}"};
+  }
+
+  rpc UpdateItem(UpdateItemRequest) returns (GetItemResponse) {
+    option (google.api.http) = {
+      patch: "/collections/{collection_id}/items/{id}"
+      body: "item"
+    };
+  }
+
+  rpc DeleteItem(CollectionItemId) returns (google.protobuf.Empty) {
+    option (google.api.http) = {delete: "/collections/{collection_id}/items/{id}"};
   }
 }

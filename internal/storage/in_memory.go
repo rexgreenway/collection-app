@@ -1,6 +1,11 @@
 package storage
 
 import (
+	"maps"
+	"slices"
+
+	"go.uber.org/zap"
+
 	"github.com/rexgreenway/collection-app/internal/entities"
 )
 
@@ -9,11 +14,13 @@ const InMemory StorageType = "in_memory"
 // inMemoryStorage ???
 type inMemoryStorage struct {
 	store map[string]entities.Collection
+
+	logger *zap.SugaredLogger
 }
 
 // NewInMemoryStorage ???
-func newInMemoryStorage() (*inMemoryStorage, error) {
-	return &inMemoryStorage{store: map[string]entities.Collection{}}, nil
+func newInMemoryStorage(logger *zap.SugaredLogger) (*inMemoryStorage, error) {
+	return &inMemoryStorage{store: map[string]entities.Collection{}, logger: logger}, nil
 }
 
 // CreateCollection ???
@@ -26,8 +33,14 @@ func (s inMemoryStorage) CreateCollection(collection entities.Collection) (entit
 }
 
 // ListCollections ???
-func (s inMemoryStorage) ListCollections() (map[string]entities.Collection, error) {
-	return s.store, nil
+func (s inMemoryStorage) ListCollections(pagination *entities.Pagination) ([]entities.Collection, error) {
+	total := int32(len(s.store))
+
+	validateTransformPagination(pagination, total)
+
+	result := slices.Collect(maps.Values(s.store))[pagination.Start:pagination.End]
+
+	return result, nil
 }
 
 // GetCollection ???

@@ -35,7 +35,7 @@ func main() {
 	// Set up persistent Store
 	// Read this from a env var at some point
 	storeType := storage.InMemory
-	store, err := storage.StorageManager(storeType)
+	store, err := storage.StorageManager(storeType, logger)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to initialise %q type store: %v\n", storeType, err)
 		os.Exit(1)

@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package v1.collection;
+
+import "google/api/field_behavior.proto";
+import "v1/collection/types.proto";
+
+option go_package = "github.com/rexgreenway/collection-app/internal/gen/v1/collection";
+
+// ======= REQUEST TYPES =======
+
+// ------- Generic -------
+message CollectionId {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message CollectionItemId {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  string collection_id = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// ------- QueryParams -------
+message PaginationParams {
+  // PaginationParams are added to RESTful requests as chained dot products
+  // E.g. GET /collections/abc/items?pagination.page_size=5&pagination.page=1
+  int32 page_size = 1 [(google.api.field_behavior) = REQUIRED];
+  int32 page = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// ------- Collections -------
+message ListCollectionsRequest {
+  optional PaginationParams pagination = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+message CreateCollectionRequest {
+  Collection collection = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UpdateCollectionRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  Collection collection = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// ------- Items -------
+message ListItemsRequest {
+  string collection_id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  PaginationParams pagination = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+message CreateItemRequest {
+  string collection_id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  Item items = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message CreateItemsRequest {
+  string collection_id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  repeated Item items = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UpdateItemRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  string collection_id = 2 [(google.api.field_behavior) = REQUIRED];
+
+  Item item = 3 [(google.api.field_behavior) = REQUIRED];
+}

@@ -18,6 +18,7 @@
   "paths": {
     "/collections": {
       "get": {
+        "summary": "------- Collections -------",
         "operationId": "CollectionService_ListCollections",
         "responses": {
           "200": {
@@ -33,6 +34,23 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "pagination.pageSize",
+            "description": "PaginationParams are added to RESTful requests as chained dot products\nE.g. GET /collections/abc/items?pagination.page_size=5\u0026pagination.page=1",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.page",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
         "tags": [
           "CollectionService"
         ]
@@ -60,6 +78,243 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/collectionCollection"
+            }
+          }
+        ],
+        "tags": [
+          "CollectionService"
+        ]
+      }
+    },
+    "/collections/{collectionId}/items": {
+      "get": {
+        "summary": "------- Items -------",
+        "operationId": "CollectionService_ListItems",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/collectionListItemsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "pagination.pageSize",
+            "description": "PaginationParams are added to RESTful requests as chained dot products\nE.g. GET /collections/abc/items?pagination.page_size=5\u0026pagination.page=1",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.page",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "CollectionService"
+        ]
+      },
+      "post": {
+        "operationId": "CollectionService_CreateItem",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/collectionGetItemResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "items",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/collectionItem"
+            }
+          }
+        ],
+        "tags": [
+          "CollectionService"
+        ]
+      }
+    },
+    "/collections/{collectionId}/items/{id}": {
+      "get": {
+        "operationId": "CollectionService_GetItem",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/collectionGetItemResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "CollectionService"
+        ]
+      },
+      "delete": {
+        "operationId": "CollectionService_DeleteItem",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "CollectionService"
+        ]
+      },
+      "patch": {
+        "operationId": "CollectionService_UpdateItem",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/collectionGetItemResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "item",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/collectionItem"
+            }
+          }
+        ],
+        "tags": [
+          "CollectionService"
+        ]
+      }
+    },
+    "/collections/{collectionId}/items:batchCreate": {
+      "post": {
+        "operationId": "CollectionService_CreateItems",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/collectionListItemsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "items",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/collectionItem"
+              }
             }
           }
         ],
@@ -185,6 +440,26 @@
         }
       }
     },
+    "collectionGetItemResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/collectionItem"
+        }
+      }
+    },
+    "collectionItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "collectionListCollectionsResponse": {
       "type": "object",
       "properties": {
@@ -194,8 +469,47 @@
             "type": "object",
             "$ref": "#/definitions/collectionCollection"
           }
+        },
+        "pagination": {
+          "$ref": "#/definitions/collectionPaginationParams",
+          "readOnly": true
         }
       }
+    },
+    "collectionListItemsResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/collectionItem"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/collectionPaginationParams",
+          "readOnly": true
+        }
+      }
+    },
+    "collectionPaginationParams": {
+      "type": "object",
+      "properties": {
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "PaginationParams are added to RESTful requests as chained dot products\nE.g. GET /collections/abc/items?pagination.page_size=5\u0026pagination.page=1"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "------- QueryParams -------",
+      "required": [
+        "pageSize",
+        "page"
+      ]
     },
     "protobufAny": {
       "type": "object",

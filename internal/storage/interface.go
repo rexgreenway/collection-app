@@ -7,7 +7,7 @@ import (
 // Storage defines the methodologies for fetching and editing collection data.
 type Store interface {
 	// ListCollections ???
-	ListCollections() (map[string]entities.Collection, error)
+	ListCollections(pagination *entities.Pagination) ([]entities.Collection, error)
 
 	// CreateCollection adds the provided collection into storage.
 	CreateCollection(entities.Collection) (entities.Collection, error)

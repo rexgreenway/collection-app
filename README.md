@@ -11,7 +11,9 @@ grpcurl -plaintext -d '{"id": "hello"}' localhost:50100 collection.CollectionSer
 ```
 
 ```bash
-curl -X GET localhost:8089/v1/collections/hello
+curl -X GET localhost:8089/v1/collections
+curl -X GET localhost:8089/v1/collections/ID_GOES_HERE
+curl -X POST -d '{ "name": "new_collection" }' localhost:8089/v1/collections
 ```
 
 # Helpful Docs:

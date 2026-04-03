@@ -28,9 +28,11 @@ type collectionServer struct {
 
 func (s *collectionServer) ListCollections(
 	ctx context.Context,
-	_ *emptypb.Empty,
+	req *pb.ListCollectionsRequest,
 ) (*pb.ListCollectionsResponse, error) {
-	collections, err := s.store.ListCollections()
+	pagination := protoToPagination(req.GetPagination())
+
+	collections, err := s.store.ListCollections(&pagination)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "ListCollections failed: %v", err)
 	}
@@ -41,7 +43,8 @@ func (s *collectionServer) ListCollections(
 	}
 
 	return &pb.ListCollectionsResponse{
-		Data: result,
+		Data:       result,
+		Pagination: paginationToProto(pagination),
 	}, nil
 }
 
@@ -71,7 +74,7 @@ func (s *collectionServer) CreateCollection(
 
 func (s *collectionServer) GetCollection(
 	ctx context.Context,
-	req *pb.Id,
+	req *pb.CollectionId,
 ) (*pb.GetCollectionResponse, error) {
 	id := req.GetId()
 
@@ -111,7 +114,7 @@ func (s *collectionServer) UpdateCollection(
 
 func (s *collectionServer) DeleteCollection(
 	ctx context.Context,
-	req *pb.Id,
+	req *pb.CollectionId,
 ) (*emptypb.Empty, error) {
 	id := req.GetId()
 

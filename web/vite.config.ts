@@ -7,7 +7,7 @@ export default defineConfig({
   // proxys requests to the go backend
   server: {
     proxy: {
-      "*": "http://localhost:8089",
+      "/v1/collections": "http://localhost:8089",
     },
   },
 });
