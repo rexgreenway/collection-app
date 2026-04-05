@@ -5,6 +5,7 @@ plugins:
   # TS / Node 
   - remote: buf.build/bufbuild/es:v2.11.0
     out: web/packages/gen
+    include_imports: true
   # Go
   - remote: buf.build/protocolbuffers/go:v1.35.1
     out: internal/gen

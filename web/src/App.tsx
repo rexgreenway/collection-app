@@ -1,9 +1,12 @@
+import { useEffect, useState } from "react";
+
+import { type Collection } from "@collection-app/gen/v1";
+
 import { useTheme } from "./contexts";
+import { RestClient } from "./api/fetch";
+import Bubble from "./components/Bubble";
 
 import styles from "./App.module.css";
-import { useEffect, useState } from "react";
-import { RestClient } from "./api/fetch";
-import type { Collection } from "@collection-app/gen/v1";
 
 const App = () => {
   // THEME CONTEXT
@@ -36,19 +39,26 @@ const App = () => {
         </button>
       </header>
 
+      <Bubble>
+        {...collections.map((c) => {
+          // Radius of collections should be the size of the collection??
+          return { group: c.name, radius: 1 };
+        })}
+      </Bubble>
+
       {/* List Collections */}
-      <section>
+      {/* <section>
         <div>
           <h2>Collections</h2>
           <button onClick={listEm}>Get Em.</button>
         </div>
-      </section>
+      </section> */}
       {/* THe list of collections itself */}
-      <section>
+      {/* <section>
         {collections.map((c) => (
           <p key={c.id}>{c.name}</p>
         ))}
-      </section>
+      </section> */}
 
       <footer>
         <h3>FOOTER - links - etc...</h3>
