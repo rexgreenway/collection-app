@@ -4,7 +4,9 @@ import { type Collection } from "@collection-app/gen/v1";
 
 import { useTheme } from "./contexts";
 import { RestClient } from "./api/fetch";
-import Bubble from "./components/Bubble";
+
+// import Bubble from "./components/Bubble";
+import BubbleCanvas from "./components/BubbleCanvas";
 
 import styles from "./App.module.css";
 
@@ -29,6 +31,13 @@ const App = () => {
 
   useEffect(listEm, []);
 
+  const generateRandomArray = () => {
+    const length = Math.floor(Math.random() * 10) + 1;
+    return Array.from({ length }, () => Math.ceil(Math.random() * 10 + 4));
+  };
+
+  const [foo, setFoo] = useState(generateRandomArray());
+
   return (
     <div id="app" className={styles.App}>
       {/* Header */}
@@ -39,12 +48,22 @@ const App = () => {
         </button>
       </header>
 
-      <Bubble>
-        {...collections.map((c) => {
+      <div>{foo}</div>
+
+      <BubbleCanvas>
+        {/* {...collections.map((c) => {
           // Radius of collections should be the size of the collection??
           return { group: c.name, radius: 1 };
+        })} */}
+        {...foo.map((c) => {
+          // Radius of collections should be the size of the collection??
+          return { group: `test-${c}`, radius: c };
         })}
-      </Bubble>
+      </BubbleCanvas>
+
+      <button onClick={() => setFoo(generateRandomArray())}>
+        Add data point
+      </button>
 
       {/* List Collections */}
       {/* <section>
