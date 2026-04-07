@@ -23,5 +23,6 @@ message Item {
     (google.api.field_behavior) = IDENTIFIER,
     (google.api.field_behavior) = OUTPUT_ONLY
   ];
-  string name = 2;
+  string collection_id = 2;
+  string name = 3;
 }

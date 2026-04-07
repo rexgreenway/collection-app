@@ -20,7 +20,12 @@ import (
 )
 
 // StartGrpcServer
-func StartGrpcServer(ctx context.Context, logger *zap.SugaredLogger, store storage.Store) error {
+func StartGrpcServer(
+	ctx context.Context,
+	logger *zap.SugaredLogger,
+	store storage.Store,
+	collectionService collection.CollectionService,
+) error {
 	lis, err := net.Listen("tcp", "localhost:50100")
 	if err != nil {
 		return fmt.Errorf("failed to listen: %v", err)
@@ -38,7 +43,7 @@ func StartGrpcServer(ctx context.Context, logger *zap.SugaredLogger, store stora
 	// This means that if I want to create a new implementation of the Collection Server
 	// Maybe create a new version in the future... I can create a whole new implementation
 	// swap it out!
-	pb.RegisterCollectionServiceServer(grpcServer, collection.NewServer(logger, store))
+	pb.RegisterCollectionServiceServer(grpcServer, collectionService)
 
 	// Goroutine watches for context cancellation
 	go func() {
@@ -53,12 +58,17 @@ func StartGrpcServer(ctx context.Context, logger *zap.SugaredLogger, store stora
 }
 
 // StartHTTPServer ???
-func StartHTTPServer(ctx context.Context, logger *zap.SugaredLogger, store storage.Store) error {
+func StartHTTPServer(
+	ctx context.Context,
+	logger *zap.SugaredLogger,
+	store storage.Store,
+	collectionService collection.CollectionService,
+) error {
 	// Gateway Mux from grpc-gateway
 	gwMux := runtime.NewServeMux()
 
 	// Register the collection service with the gateway
-	pb.RegisterCollectionServiceHandlerServer(ctx, gwMux, collection.NewServer(logger, store))
+	pb.RegisterCollectionServiceHandlerServer(ctx, gwMux, collectionService)
 
 	// Create GIN router with v1 prefix group and attach the
 	router := gin.New()

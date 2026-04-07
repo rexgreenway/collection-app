@@ -460,6 +460,9 @@
           "type": "string",
           "readOnly": true
         },
+        "collectionId": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         }

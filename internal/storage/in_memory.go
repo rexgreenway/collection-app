@@ -6,32 +6,30 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/bytedance/gopkg/util/logger"
 	"github.com/rexgreenway/collection-app/internal/entities"
 )
 
-const InMemory StorageType = "in_memory"
+const IN_MEMORY StorageType = "in_memory"
 
 // inMemoryStorage ???
 type inMemoryStorage struct {
-	collections map[string]entities.Collection
-	items       map[string][]entities.Item
+	collections     map[string]entities.Collection
+	collectionItems map[string]map[string]entities.Item
 
 	logger *zap.SugaredLogger
 }
 
 // NewInMemoryStorage ???
 func newInMemoryStorage(logger *zap.SugaredLogger) (*inMemoryStorage, error) {
-	return &inMemoryStorage{collections: map[string]entities.Collection{}, logger: logger}, nil
+	return &inMemoryStorage{
+		collections:     map[string]entities.Collection{},
+		collectionItems: map[string]map[string]entities.Item{},
+		logger:          logger,
+	}, nil
 }
 
-// CreateCollection ???
-func (s inMemoryStorage) CreateCollection(collection entities.Collection) (entities.Collection, error) {
-	if _, ok := s.collections[collection.ID]; ok {
-		return entities.Collection{}, ErrCollectionAlreadyExists
-	}
-	s.collections[collection.ID] = collection
-	return collection, nil
-}
+// ------- Collection Storage Methods -------
 
 // ListCollections ???
 func (s inMemoryStorage) ListCollections(pagination *entities.Pagination) ([]entities.Collection, error) {
@@ -44,9 +42,18 @@ func (s inMemoryStorage) ListCollections(pagination *entities.Pagination) ([]ent
 	return result, nil
 }
 
+// CreateCollection ???
+func (s inMemoryStorage) CreateCollection(collection entities.Collection) (entities.Collection, error) {
+	if _, ok := s.collections[collection.Id]; ok {
+		return entities.Collection{}, ErrCollectionAlreadyExists
+	}
+	s.collections[collection.Id] = collection
+	return collection, nil
+}
+
 // GetCollection ???
-func (s inMemoryStorage) GetCollection(collectionID string) (entities.Collection, error) {
-	collection, ok := s.collections[collectionID]
+func (s inMemoryStorage) GetCollection(collectionId string) (entities.Collection, error) {
+	collection, ok := s.collections[collectionId]
 	if !ok {
 		return entities.Collection{}, ErrCollectionNotFound
 	}
@@ -54,25 +61,145 @@ func (s inMemoryStorage) GetCollection(collectionID string) (entities.Collection
 	return collection, nil
 }
 
-// UpdateCollection ???
-// Change this to a DIFF method???
+// UpdateCollection ??? (Change this to a diff method??)
 func (s *inMemoryStorage) UpdateCollection(id string, collection entities.Collection) (entities.Collection, error) {
 	if _, ok := s.collections[id]; !ok {
 		return entities.Collection{}, ErrCollectionNotFound
 	}
 
-	s.collections[collection.ID] = collection
+	s.collections[collection.Id] = collection
 
 	return collection, nil
 }
 
 // DeleteCollection ???
-func (s *inMemoryStorage) DeleteCollection(collectionID string) error {
-	if _, ok := s.collections[collectionID]; !ok {
+func (s *inMemoryStorage) DeleteCollection(collectionId string) error {
+	if _, ok := s.collections[collectionId]; !ok {
 		return ErrCollectionNotFound
 	}
 
-	delete(s.collections, collectionID)
+	delete(s.collections, collectionId)
+
+	return nil
+}
+
+// ------- Item Storage Methods -------
+
+// ListItemsByCollectionId ???
+func (s *inMemoryStorage) ListItemsByCollectionId(
+	collectionId string,
+	pagination *entities.Pagination,
+) ([]entities.Item, error) {
+	if _, ok := s.collections[collectionId]; !ok {
+		return []entities.Item{}, ErrCollectionNotFound
+	}
+
+	items := s.collectionItems[collectionId]
+
+	total := int32(len(items))
+
+	validateTransformPagination(pagination, total)
+
+	result := slices.Collect(maps.Values(items))[pagination.Start:pagination.End]
+
+	return result, nil
+}
+
+// CreateItem ???
+func (s *inMemoryStorage) CreateItem(item entities.Item) (entities.Item, error) {
+	// Check collection exists
+	collectionItems, ok := s.collectionItems[item.CollectionId]
+	if !ok {
+		return entities.Item{}, ErrCollectionNotFound
+	}
+
+	if _, ok := collectionItems[item.Id]; ok {
+		return entities.Item{}, ErrItemAlreadyExists
+	}
+	collectionItems[item.Id] = item
+
+	return item, nil
+}
+
+// CreateItemBatchByCollectionId ???
+func (s *inMemoryStorage) CreateItemBatchByCollectionId(
+	collectionId string,
+	items []entities.Item,
+) ([]entities.Item, error) {
+	// Check collection exists
+	if _, ok := s.collections[collectionId]; !ok {
+		return []entities.Item{}, ErrCollectionNotFound
+	}
+
+	collectionItems := s.collectionItems[collectionId]
+
+	for _, item := range items {
+		if _, ok := collectionItems[item.Id]; ok {
+			logger.Warnf("Item %q already exists, skipping creation.", item.Id)
+		} else {
+			collectionItems[item.Id] = item
+		}
+	}
+
+	return items, nil
+}
+
+// GetItem ???
+func (s *inMemoryStorage) GetItem(
+	collectionId string,
+	itemId string,
+) (entities.Item, error) {
+	// Check collection exists
+	collectionItems, ok := s.collectionItems[collectionId]
+	if !ok {
+		return entities.Item{}, ErrCollectionNotFound
+	}
+
+	item, ok := collectionItems[itemId]
+	if !ok {
+		return entities.Item{}, ErrItemNotFound
+	}
+
+	return item, nil
+}
+
+func (s *inMemoryStorage) UpdateItem(
+	collectionId string,
+	itemId string,
+	item entities.Item,
+) (entities.Item, error) {
+	// Check collection exists
+	collectionItems, ok := s.collectionItems[collectionId]
+	if !ok {
+		return entities.Item{}, ErrCollectionNotFound
+	}
+
+	// Check item exists
+	if _, ok := collectionItems[itemId]; !ok {
+		return entities.Item{}, ErrItemNotFound
+	}
+
+	collectionItems[itemId] = item
+
+	return item, nil
+}
+
+// DeleteItem ???
+func (s *inMemoryStorage) DeleteItem(
+	collectionId string,
+	itemId string,
+) error {
+	collectionItems, ok := s.collectionItems[collectionId]
+	if !ok {
+		return ErrCollectionNotFound
+	}
+
+	// Check item exists
+	if _, ok := collectionItems[itemId]; !ok {
+		return ErrItemNotFound
+	}
+
+	delete(collectionItems, itemId)
 
 	return nil
 }

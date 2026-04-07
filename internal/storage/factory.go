@@ -9,10 +9,10 @@ import (
 // StorageType ???
 type StorageType string
 
-// StorageManager ???
-func StorageManager(impl StorageType, logger *zap.SugaredLogger) (Store, error) {
+// StorageFactory ???
+func StorageFactory(impl StorageType, logger *zap.SugaredLogger) (Store, error) {
 	switch impl {
-	case InMemory:
+	case IN_MEMORY:
 		return newInMemoryStorage(logger)
 
 	// case OS:

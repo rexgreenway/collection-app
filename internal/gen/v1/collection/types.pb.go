@@ -7,11 +7,12 @@
 package collection
 
 import (
+	reflect "reflect"
+	sync "sync"
+
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
-	sync "sync"
 )
 
 const (
@@ -87,8 +88,9 @@ type Item struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id   string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Id           string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	CollectionId string `protobuf:"bytes,2,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
+	Name         string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 }
 
 func (x *Item) Reset() {
@@ -124,6 +126,13 @@ func (*Item) Descriptor() ([]byte, []int) {
 func (x *Item) GetId() string {
 	if x != nil {
 		return x.Id
+	}
+	return ""
+}
+
+func (x *Item) GetCollectionId() string {
+	if x != nil {
+		return x.CollectionId
 	}
 	return ""
 }
@@ -178,11 +187,13 @@ func file_v1_collection_types_proto_rawDescGZIP() []byte {
 	return file_v1_collection_types_proto_rawDescData
 }
 
-var file_v1_collection_types_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_v1_collection_types_proto_goTypes = []any{
-	(*Collection)(nil), // 0: v1.collection.Collection
-	(*Item)(nil),       // 1: v1.collection.Item
-}
+var (
+	file_v1_collection_types_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+	file_v1_collection_types_proto_goTypes  = []any{
+		(*Collection)(nil), // 0: v1.collection.Collection
+		(*Item)(nil),       // 1: v1.collection.Item
+	}
+)
 var file_v1_collection_types_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type

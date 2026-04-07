@@ -1,8 +1,10 @@
 package entities
 
 type Item struct {
-	ID   string `json:"id"`
+	Id   string `json:"id"`
 	Name string `json:"name"`
+
+	CollectionId string `json:"collection_id"`
 }
 
 // IDEAS:

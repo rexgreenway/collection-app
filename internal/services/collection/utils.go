@@ -31,18 +31,39 @@ func paginationToProto(p entities.Pagination) *pb.PaginationParams {
 	return foo
 }
 
+// ------- Collection Transformers -------
+
 // collectionToProto ???
-func collectionToProto(c entities.Collection) *pb.Collection {
+func collectionToProto(collection entities.Collection) *pb.Collection {
 	return &pb.Collection{
-		Id:   c.ID,
-		Name: c.Name,
+		Id:   collection.Id,
+		Name: collection.Name,
 	}
 }
 
 // protoToCollection ???
-func protoToCollection(c *pb.Collection) entities.Collection {
+func protoToCollection(collection *pb.Collection) entities.Collection {
 	return entities.Collection{
-		ID:   c.GetId(),
-		Name: c.GetName(),
+		Id:   collection.GetId(),
+		Name: collection.GetName(),
+	}
+}
+
+// ------- Item Transformers -------
+
+// itemToProto
+func itemToProto(item entities.Item) *pb.Item {
+	return &pb.Item{
+		Id:   item.Id,
+		Name: item.Name,
+	}
+}
+
+// protoToItem ???
+func protoToItem(item *pb.Item) entities.Item {
+	return entities.Item{
+		Id:           item.GetId(),
+		Name:         item.GetName(),
+		CollectionId: item.GetCollectionId(),
 	}
 }
