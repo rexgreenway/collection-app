@@ -1,29 +1,16 @@
 import { useRef, useLayoutEffect, useEffect, useState } from "react";
 
 import * as d3 from "d3";
-import { type SimulationNodeDatum } from "d3";
 
 import styles from "./Bubble.module.css";
-
-/**
- * Node is a helper interface for rendering D3 Simulations with React & Typescript.
- *
- * This interface extends the D3.js type SimulationNodeDatum that is used by D3
- * simulations to dynamically update the positions of elements in the DOM. The
- * new required parameters allow for custom grouping of Nodes & defining how
- * the radii of Nodes are calculated.
- */
-interface Node extends SimulationNodeDatum {
-  group: string;
-  radius: number;
-}
+import type { BubbleNode } from "./types";
 
 /**
  * Bubble defines a component that renders a D3.js powered Bubble Plot given
  * children elements that satisfy the Node interface.
  *
  */
-const Bubble = ({ children }: { children: Node[] }) => {
+const Bubble = ({ children }: { children: BubbleNode[] }) => {
   // divRef: references plot's container
   const divRef = useRef(null);
   // svgRef: references the d3 svg (necessary as React and D3 manipulate the DOM)
@@ -65,12 +52,12 @@ const Bubble = ({ children }: { children: Node[] }) => {
       // Force for 'border' of nodes creates collisions
       .force(
         "collide",
-        d3.forceCollide<Node>((d) => r * d.radius + 2).iterations(12),
+        d3.forceCollide<BubbleNode>((d) => r * d.radius + 2).iterations(12),
       )
       // Inter-node gravity
       .force(
         "charge",
-        d3.forceManyBody<Node>().strength((d) => r * d.radius),
+        d3.forceManyBody<BubbleNode>().strength((d) => r * d.radius),
       );
 
     // Establish SVG sizing and ViewBox
@@ -83,14 +70,14 @@ const Bubble = ({ children }: { children: Node[] }) => {
     // Join Node Data to simulation as circles
     const node = svgElement
       .selectAll<SVGCircleElement, SVGCircleElement>("circle")
-      .data<Node>(nodes)
+      .data<BubbleNode>(nodes)
       .join("circle")
       .attr("r", (d) => r * d.radius)
       .attr("fill", (d) => color(d.group));
 
     // Reheat the simulation when drag starts, and fix the subject position.
     function dragStart(
-      event: d3.D3DragEvent<SVGCircleElement, SVGCircleElement, Node>,
+      event: d3.D3DragEvent<SVGCircleElement, SVGCircleElement, BubbleNode>,
     ) {
       if (!event.active) simulation.alphaTarget(0.4).restart();
       event.subject.fx = event.subject.x;
@@ -99,7 +86,7 @@ const Bubble = ({ children }: { children: Node[] }) => {
 
     // Update the subject (dragged node) position during drag.
     function dragged(
-      event: d3.D3DragEvent<SVGCircleElement, SVGCircleElement, Node>,
+      event: d3.D3DragEvent<SVGCircleElement, SVGCircleElement, BubbleNode>,
     ) {
       event.subject.fx = event.x;
       event.subject.fy = event.y;
@@ -108,7 +95,7 @@ const Bubble = ({ children }: { children: Node[] }) => {
     // Restore the target alpha so the simulation cools after dragging ends.
     // Unfix the subject position now that it’s no longer being dragged.
     function dragEnd(
-      event: d3.D3DragEvent<SVGCircleElement, SVGCircleElement, Node>,
+      event: d3.D3DragEvent<SVGCircleElement, SVGCircleElement, BubbleNode>,
     ) {
       if (!event.active) simulation.alphaTarget(0);
       event.subject.fx = null;
@@ -117,7 +104,7 @@ const Bubble = ({ children }: { children: Node[] }) => {
     // Add drag behaviour
     node.call(
       d3
-        .drag<SVGCircleElement, Node>()
+        .drag<SVGCircleElement, BubbleNode>()
         .on("start", dragStart)
         .on("drag", dragged)
         .on("end", dragEnd),

@@ -1,29 +1,15 @@
 import { useRef, useLayoutEffect, useEffect, useState } from "react";
 
 import * as d3 from "d3";
-import { type SimulationNodeDatum } from "d3";
 
 import styles from "./Bubble.module.css";
-
-/**
- * Node is a helper interface for rendering D3 Simulations with React & Typescript.
- *
- * This interface extends the D3.js type SimulationNodeDatum that is used by D3
- * simulations to dynamically update the positions of elements in the DOM. The
- * new required parameters allow for custom grouping of Nodes & defining how
- * the radii of Nodes are calculated.
- */
-interface Node extends SimulationNodeDatum {
-  group: string;
-  radius: number;
-}
-
+import type { BubbleNode } from "./types";
 /**
  * Bubble defines a component that renders a D3.js powered Bubble Plot given
  * children elements that satisfy the Node interface.
  *
  */
-const BubbleCanvas = ({ children }: { children: Node[] }) => {
+const BubbleCanvas = ({ children }: { children: BubbleNode[] }) => {
   // divRef: references plot's container
   const divRef = useRef<HTMLDivElement>(null);
   // canvasRef: references the d3 canvas (necessary as React and D3 manipulate the DOM)
@@ -64,7 +50,7 @@ const BubbleCanvas = ({ children }: { children: Node[] }) => {
     d3.select(canvasNode).attr("width", width).attr("height", height);
 
     // Function that actually draws the shapes
-    const drawRectangle = (d: Node, i: number) => {
+    const drawRectangle = (d: BubbleNode, i: number) => {
       context.beginPath();
       context.arc(i * 50 + 50, 150, 3 * d.radius, 0, 2 * Math.PI);
       context.fillStyle = color(d.group);
