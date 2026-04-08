@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { ApiClientFactory, ApiClientImpl } from "./api";
-import BubbleCanvas from "./components/BubbleCanvas";
+import BubbleCanvas from "./components/d3/BubbleCanvas";
 
 import type { Collection } from "./api/types";
 
