@@ -1,16 +1,21 @@
 import type {
   Collection,
-  GetCollectionResponse,
-  ListCollectionsResponse,
-} from "@collection-app/gen/v1";
+  ListResponse,
+  GetResponse,
+  Pagination,
+  CreateCollectionRequest,
+  UpdateCollectionRequest,
+} from "./types";
 
 export default interface CollectionClient {
-  listCollections(): Promise<ListCollectionsResponse>;
-  createCollection(collection: Collection): Promise<GetCollectionResponse>;
-  getCollection(id: string): Promise<GetCollectionResponse>;
+  listCollections(pagination?: Pagination): Promise<ListResponse<Collection>>;
+  createCollection(
+    collection: CreateCollectionRequest,
+  ): Promise<GetResponse<Collection>>;
+  getCollection(id: string): Promise<GetResponse<Collection>>;
   updateCollection(
     id: string,
-    collection: Collection,
-  ): Promise<GetCollectionResponse>;
+    collection: UpdateCollectionRequest,
+  ): Promise<GetResponse<Collection>>;
   deleteCollection(id: string): Promise<void>;
 }
