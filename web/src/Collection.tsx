@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { ApiClientFactory, ApiClientImpl } from "./api";
-import BubbleCanvas from "./components/d3/BubbleCanvas";
-
 import type { Collection } from "./api/types";
+import { ApiClientFactory, ApiClientImpl } from "./api";
+
+import CollectionBubbleChart from "./components/d3/CollectionBubble";
 
 const CollectionsSection = () => {
   // get LOCAL STORAGE
@@ -50,6 +50,8 @@ const CollectionsSection = () => {
           <button onClick={createOne}>Create One.</button>
           <button onClick={listEm}>Get Em.</button>
         </div>
+      </section>
+      <section>
         <div>
           {collections.map((c) => (
             <p key={c.id}>
@@ -59,12 +61,12 @@ const CollectionsSection = () => {
         </div>
       </section>
 
-      <BubbleCanvas>
+      <CollectionBubbleChart>
         {...collections.map((c) => {
           // Radius of collections should be the size of the collection??
-          return { group: c.name, radius: 10 };
+          return { group: c.name, radius: 2 };
         })}
-      </BubbleCanvas>
+      </CollectionBubbleChart>
     </>
   );
 };
