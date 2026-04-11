@@ -31,7 +31,7 @@ const CollectionsSection = () => {
 
   const listEm = () => {
     api
-      .listCollections()
+      .listCollections({ page: 1, pageSize: 100 })
       .then((response) => {
         setCollections(response.data);
       })

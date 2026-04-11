@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo, useLayoutEffect } from "react";
 
 import * as d3 from "d3";
 
@@ -12,38 +12,36 @@ import type { BubbleNode } from "./types";
  */
 const CollectionBubbleChart = ({ children }: { children: BubbleNode[] }) => {
   // divRef: references plot's container
-  const divRef = useRef(null);
-  // svgRef: references the d3 svg (necessary as React and D3 manipulate the DOM)
-  const svgRef = useRef(null);
+  const divRef = useRef<HTMLDivElement>(null);
 
   // Responsive plot sizing
   const [width, SetWidth] = useState(300);
   const [height, SetHeight] = useState(300);
   const handleResize = () => {
-    SetWidth(divRef.current ? divRef.current["offsetWidth"] : 300);
-    SetHeight(divRef.current ? divRef.current["offsetHeight"] : 300);
+    SetWidth(divRef.current ? divRef.current.offsetWidth : 300);
+    SetHeight(divRef.current ? divRef.current.offsetHeight : 300);
   };
 
   // Hook watching for window resizing
   useEffect(() => {
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  });
+  }, []);
 
   // Radius Scaling
   const r = 20;
 
-  // Render d3 simulation
+  // Color scale persists across renders
+  const color = useMemo(() => d3.scaleOrdinal(d3.schemeCategory10), []);
+
+  // Simulated node positions
+  const [simulatedNodes, setSimulatedNodes] = useState<BubbleNode[]>([]);
+
+  // Run d3 simulation (math only, no DOM manipulation)
   useLayoutEffect(() => {
-    handleResize();
+    const nodes: BubbleNode[] = children.map((c) => ({ ...c }));
 
-    // Copy children nodes for manipulation by d3
-    const nodes = children.map((c) => ({ ...c }));
-
-    // Specify the color scale.
-    const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-    // Create and start simulation
     const simulation = d3
       .forceSimulation(nodes)
       // Centering nodes toward (0, 0) per node
@@ -58,85 +56,49 @@ const CollectionBubbleChart = ({ children }: { children: BubbleNode[] }) => {
       .force(
         "charge",
         d3.forceManyBody<BubbleNode>().strength((d) => r * d.radius),
-      );
+      )
+      .on("tick", () => {
+        // Triggers rerender of whole react component
+        // okay for up to ~100 elements
+        setSimulatedNodes([...nodes]);
+      });
 
-    // Establish SVG sizing and ViewBox
-    const svgElement = d3
-      .select(svgRef.current)
-      .attr("width", width)
-      .attr("height", height)
-      .attr("viewBox", [-width / 2, -height / 2, width, height]);
-
-    // Join Node Data to simulation as circles
-    const node = svgElement
-      .selectAll<SVGGElement, SVGGElement>("g")
-      .data<BubbleNode>(nodes)
-      .join(
-        (enter) => {
-          // Create the Child Group
-          const childGroup = enter
-            .append("g")
-            .attr("class", "child")
-            .attr("id", (d) => `child-${d.group}`);
-
-          // // Actual bubble border
-          // childGroup
-          //   .append("circle")
-          //   .attr("class", "bubble-border")
-          //   .attr("r", (d) => r * d.radius + 10)
-          //   .attr("stroke", "white")
-          //   .attr("stroke-width", 1)
-          //   .attr("fill", "none");
-
-          childGroup
-            .append("circle")
-            .attr("r", (d) => r * d.radius)
-            .attr("fill", (d) => color(d.group));
-
-          // Add
-          childGroup
-            .append("circle")
-            .attr("r", (d) => 10)
-            .attr("cx", (d) => r * d.radius)
-            .attr("fill", "red");
-
-          // Inspect
-          childGroup
-            .append("circle")
-            .attr("r", (d) => 10)
-            .attr("cx", (d) => (r * d.radius) / Math.sqrt(2))
-            .attr("cy", (d) => (r * d.radius) / Math.sqrt(2))
-            .attr("fill", "green");
-
-          // More
-          childGroup
-            .append("circle")
-            .attr("r", (d) => 10)
-            .attr("cy", (d) => r * d.radius)
-            .attr("fill", "blue");
-
-          return childGroup;
-        },
-        (update) => {
-          update.select("circle").attr("fill", (d) => color(d.group));
-          return update;
-        },
-      );
-
-    // Change node on tick
-    function ticked() {
-      node.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
-    }
-
-    // Turn on Simulation
-    simulation.on("tick", ticked);
-  }, [children, height, width]);
+    return () => {
+      simulation.stop();
+    };
+  }, [children]);
 
   // Must set an explicit height for the top level div (no % values) otherwise
   // run into a `Maximum update depth exceeded.` Error.
   return (
     <div className={styles.Bubble} ref={divRef}>
-      <svg className="m-auto" ref={svgRef} />
+      <svg
+        className="m-auto"
+        width={width}
+        height={height}
+        viewBox={`${-width / 2} ${-height / 2} ${width} ${height}`}
+      >
+        {simulatedNodes.map((d) => (
+          // CAN TURN THESE INTO REACT COMPONENTS
+          <g key={d.group} transform={`translate(${d.x}, ${d.y})`}>
+            {/* Collection -> Group with the circles inside, parent group controls the positions */}
+            <g>
+              <circle r={r * d.radius} fill={color(d.group)} />
+              {/* Add */}
+              <circle r={10} cx={r * d.radius} fill="red" />
+              {/* Inspect */}
+              <circle
+                r={10}
+                cx={(r * d.radius) / Math.sqrt(2)}
+                cy={(r * d.radius) / Math.sqrt(2)}
+                fill="green"
+              />
+              {/* More */}
+              <circle r={10} cy={r * d.radius} fill="blue" />
+            </g>
+          </g>
+        ))}
+      </svg>
     </div>
   );
 };
