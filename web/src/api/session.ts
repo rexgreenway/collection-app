@@ -5,15 +5,15 @@ import type CollectionClient from "./interface";
 const STORAGE_KEY = "collections";
 
 function loadCollections(): Collection[] {
-  const raw = localStorage.getItem(STORAGE_KEY);
+  const raw = sessionStorage.getItem(STORAGE_KEY);
   return raw ? JSON.parse(raw) : [];
 }
 
 function saveCollections(collections: Collection[]): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(collections));
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(collections));
 }
 
-export const LocalStorageClient: CollectionClient = {
+export const SessionStorageClient: CollectionClient = {
   async listCollections(pagination?: Pagination) {
     const collections = loadCollections();
 

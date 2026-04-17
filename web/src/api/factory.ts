@@ -1,8 +1,8 @@
 import { RestClient } from "./fetch";
-import { LocalStorageClient } from "./local";
+import { SessionStorageClient } from "./session";
 
 export const ApiClientImpl = {
-  LOCAL_STORAGE: "local",
+  SESSION_STORAGE: "session",
   FETCH: "fetch",
 } as const;
 
@@ -10,8 +10,8 @@ type ApiClientImpl = (typeof ApiClientImpl)[keyof typeof ApiClientImpl];
 
 export const ApiClientFactory = (impl: ApiClientImpl) => {
   switch (impl) {
-    case "local":
-      return LocalStorageClient;
+    case "session":
+      return SessionStorageClient;
     case "fetch":
       return RestClient;
     default:

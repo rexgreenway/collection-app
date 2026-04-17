@@ -6,8 +6,8 @@ import { ApiClientFactory, ApiClientImpl } from "./api";
 import CollectionBubbleChart from "./components/d3/CollectionBubble";
 
 const CollectionsSection = () => {
-  // get LOCAL STORAGE
-  const api = ApiClientFactory(ApiClientImpl.LOCAL_STORAGE);
+  // get SESSION STORAGE
+  const api = ApiClientFactory(ApiClientImpl.SESSION_STORAGE);
 
   // List Collections
   const [collections, setCollections] = useState<Collection[]>([]);
