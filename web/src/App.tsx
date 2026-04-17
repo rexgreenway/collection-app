@@ -1,3 +1,6 @@
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+
 import { useTheme } from "./contexts";
 
 import CollectionsSection from "./Collection";
@@ -15,15 +18,14 @@ const App = () => {
       {/* Header */}
       <header>
         <h1>Collection App</h1>
-        <button onClick={toggleTheme} title={title}>
-          Change Theme
-        </button>
       </header>
 
       <CollectionsSection />
 
       <footer>
-        <h3>FOOTER - links - etc...</h3>
+        <div onClick={toggleTheme} title={title}>
+          {theme === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+        </div>
       </footer>
     </div>
   );
