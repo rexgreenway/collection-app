@@ -1,0 +1,24 @@
+.Header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.HeaderLeft {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  align-items: center;
+}
+
+
+.PillBox {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+
+  background-color: rgba(250, 235, 215, 0.434);
+  padding: 10px 20px;
+  border-radius: 20px;
+}

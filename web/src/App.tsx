@@ -3,6 +3,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 
 import { useTheme } from "./contexts";
 
+import Header from "./components/Header";
 import CollectionsSection from "./Collection";
 
 import styles from "./App.module.css";
@@ -15,10 +16,7 @@ const App = () => {
 
   return (
     <div id="app" className={styles.App}>
-      {/* Header */}
-      <header>
-        <h1>Collection App</h1>
-      </header>
+      <Header />
 
       <CollectionsSection />
 
