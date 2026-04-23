@@ -44,7 +44,6 @@ const Header = () => {
   return (
     <>
       <header className={styles.Header}>
-        <div></div>
         {/* LEFT */}
         <div className={styles.HeaderLeft}>
           {/* Logo */}
