@@ -24,15 +24,6 @@ body {
   transition: all 0.2s linear; /* Theme change transition */
 }
 
-/* LAYOUT */
-header,
-main,
-section,
-footer {
-  display: flex;
-  justify-content: center;
-}
-
 /* TEXT FONTS / STYLING */
 h1,
 h2,
