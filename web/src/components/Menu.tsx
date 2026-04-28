@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 
+import styles from "./Header.module.css";
+
 // 1. Shared context so children can communicate with the parent
 type MenuContextType = {
   openMenu: string | null;
@@ -17,9 +19,17 @@ const useMenuContext = () => {
 // 2. Parent component provides context
 const Menu = ({ children }: { children: ReactNode }) => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+
+  const processedChildren = Array.isArray(children)
+    ? children.flatMap((child, index) => [
+        child,
+        index < children.length - 1 && <p key={`separator-${index}`}>I</p>,
+      ])
+    : children;
+
   return (
     <MenuContext.Provider value={{ openMenu, setOpenMenu }}>
-      <nav>{children}</nav>
+      <nav className={styles.PillBox}>{processedChildren}</nav>
     </MenuContext.Provider>
   );
 };
@@ -30,14 +40,14 @@ const Item = ({ name, children }: { name: string; children: ReactNode }) => {
   const isOpen = openMenu === name;
   return (
     <div>
-      <button onClick={() => setOpenMenu(isOpen ? null : name)}>{name}</button>
+      <h4 onClick={() => setOpenMenu(isOpen ? null : name)}>{name}</h4>
       {isOpen && <div>{children}</div>}
     </div>
   );
 };
 
-const Option = ({ children }: { children: ReactNode }) => {
-  return <div>{children}</div>;
+const Option = ({ optionName }: { optionName: string }) => {
+  return <p>{optionName}</p>;
 };
 
 // 4. Attach sub-components as static properties
