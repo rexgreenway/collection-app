@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 
 import type { SvgIconComponent } from "@mui/icons-material";
 
@@ -20,6 +27,18 @@ const useMenuContext = () => {
 const Menu = ({ children }: { children: ReactNode }) => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpenMenu(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const processedChildren = Array.isArray(children)
     ? children.flatMap((child, index) => [
         child,
@@ -29,7 +48,9 @@ const Menu = ({ children }: { children: ReactNode }) => {
 
   return (
     <MenuContext.Provider value={{ openMenu, setOpenMenu }}>
-      <nav className={styles.Menu}>{processedChildren}</nav>
+      <nav ref={ref} className={styles.Menu}>
+        {processedChildren}
+      </nav>
     </MenuContext.Provider>
   );
 };
