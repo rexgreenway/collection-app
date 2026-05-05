@@ -1,4 +1,8 @@
+import SettingsIcon from "@mui/icons-material/Settings";
+
 import Menu from "./Menu";
+
+import Logo from "../assets/collection-app-v1.svg?react";
 
 import styles from "./Header.module.css";
 
@@ -9,26 +13,28 @@ const Header = () => {
         {/* LEFT */}
         <div className={styles.HeaderLeft}>
           {/* Logo */}
-          <h2>Collection App</h2>
+          <Logo className={styles.Logo} />
 
           <Menu>
             <Menu.Item name="File">
-              <Menu.Option optionName="Save" />
+              <Menu.Option name="Save" />
+              <Menu.Option name="Export" />
             </Menu.Item>
             <Menu.Item name="Edit">
-              <Menu.Option optionName="Undo" />
-              <Menu.Option optionName="Redo" />
+              <Menu.Option name="Undo" />
+              <Menu.Option name="Redo" />
             </Menu.Item>
             <Menu.Item name="Options">
-              <Menu.Option optionName="Something" />
+              <Menu.Option name="Something" />
             </Menu.Item>
           </Menu>
         </div>
 
         {/* RIGHT */}
         <div>
-          {/* Replace with Logo */}
-          <h5>Settings</h5>
+          <Menu>
+            <Menu.Icon icon={SettingsIcon} />
+          </Menu>
         </div>
       </header>
     </>

@@ -2,22 +2,21 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 
 .HeaderLeft {
   display: flex;
   flex-direction: row;
-  gap: 30px;
+  gap: 10px;
   align-items: center;
 }
 
-.PillBox {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
+.Logo {
+  height: 50px;
 
-  background-color: rgba(250, 235, 215, 0.434);
-  padding: 10px 20px;
-  border-radius: 20px;
+  circle,
+  path {
+    stroke: var(--text) !important;
+  }
 }
