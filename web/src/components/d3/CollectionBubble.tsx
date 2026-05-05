@@ -2,8 +2,9 @@ import { useRef, useEffect, useState, useMemo, useLayoutEffect } from "react";
 
 import * as d3 from "d3";
 
-import styles from "./Bubble.module.css";
 import type { BubbleNode } from "./types";
+
+import styles from "./Bubble.module.css";
 
 /**
  * Bubble defines a component that renders a D3.js powered Bubble Plot given

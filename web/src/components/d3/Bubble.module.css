@@ -1,6 +1,10 @@
 .Bubble {
-    width: 100%;
-    height: 40vh;
-    
-    border: 2px solid black;
+  height: 100vh;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: -1;
+
+  border: 2px solid black;
 }

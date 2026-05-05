@@ -44,7 +44,7 @@ const CollectionsSection = () => {
 
   return (
     <>
-      <section id="collection">
+      {/* <section id="collection">
         <div>
           <h2>Collections</h2>
           <button onClick={createOne}>Create One.</button>
@@ -59,7 +59,7 @@ const CollectionsSection = () => {
             </p>
           ))}
         </div>
-      </section>
+      </section> */}
 
       <CollectionBubbleChart>
         {...collections.map((c) => {

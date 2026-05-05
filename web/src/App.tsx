@@ -15,17 +15,18 @@ const App = () => {
     theme === "dark" ? "Switch to Light mode" : "Switch to Dark mode";
 
   return (
-    <div id="app" className={styles.App}>
-      <Header />
+    <>
+      <div id="app" className={styles.App}>
+        <Header />
 
+        <footer>
+          <div onClick={toggleTheme} title={title}>
+            {theme === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+          </div>
+        </footer>
+      </div>
       <CollectionsSection />
-
-      <footer>
-        <div onClick={toggleTheme} title={title}>
-          {theme === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
-        </div>
-      </footer>
-    </div>
+    </>
   );
 };
 
