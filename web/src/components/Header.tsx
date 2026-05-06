@@ -1,6 +1,6 @@
 import SettingsIcon from "@mui/icons-material/Settings";
 
-import Menu from "./Menu";
+import Menu from "./ui/Menu";
 
 import Logo from "../assets/collection-app-v1.svg?react";
 
@@ -20,12 +20,12 @@ const Header = () => {
               <Menu.Option name="Save" />
               <Menu.Option name="Export" />
             </Menu.Item>
-            <Menu.Item name="Edit">
+            {/* <Menu.Item name="Edit">
               <Menu.Option name="Undo" />
               <Menu.Option name="Redo" />
-            </Menu.Item>
-            <Menu.Item name="Options">
-              <Menu.Option name="Something" />
+            </Menu.Item> */}
+            <Menu.Item name="Help">
+              <Menu.Option name="Quick Start" />
             </Menu.Item>
           </Menu>
         </div>

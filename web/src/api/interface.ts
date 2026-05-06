@@ -10,12 +10,12 @@ import type {
 export default interface CollectionClient {
   listCollections(pagination?: Pagination): Promise<ListResponse<Collection>>;
   createCollection(
-    collection: CreateCollectionRequest,
+    req: CreateCollectionRequest,
   ): Promise<GetResponse<Collection>>;
   getCollection(id: string): Promise<GetResponse<Collection>>;
   updateCollection(
     id: string,
-    collection: UpdateCollectionRequest,
+    req: UpdateCollectionRequest,
   ): Promise<GetResponse<Collection>>;
   deleteCollection(id: string): Promise<void>;
 }

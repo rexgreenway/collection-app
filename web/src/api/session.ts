@@ -1,4 +1,4 @@
-import type { Collection, Pagination } from "./types";
+import type { Collection, Pagination, CreateCollectionRequest } from "./types";
 
 import type CollectionClient from "./interface";
 
@@ -32,9 +32,12 @@ export const SessionStorageClient: CollectionClient = {
     };
   },
 
-  async createCollection(collection: Collection) {
+  async createCollection(req: CreateCollectionRequest) {
     const collections = loadCollections();
-    collection.id = crypto.randomUUID();
+    const collection: Collection = {
+      id: crypto.randomUUID(),
+      name: req.name,
+    };
     collections.push(collection);
     saveCollections(collections);
     return { data: collection };

@@ -15,3 +15,11 @@
   /* Justify content to take up full height */
   justify-content: space-between;
 }
+
+/* TO BE MOVED TO OWN COMPONENT ?? */
+.Footer {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-between;
+}

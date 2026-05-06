@@ -7,7 +7,7 @@ import {
 
 import type CollectionClient from "./interface";
 
-import { type Collection } from "./types";
+import type { UpdateCollectionRequest, CreateCollectionRequest } from "./types";
 import {
   protoToCollection,
   transformListResponse,
@@ -24,11 +24,11 @@ export const RestClient: CollectionClient = {
     return transformListResponse(proto, protoToCollection);
   },
 
-  async createCollection(collection: Collection) {
+  async createCollection(req: CreateCollectionRequest) {
     const res = await fetch("/v1/collections", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(collection),
+      body: JSON.stringify(req),
     });
     if (!res.ok) {
       throw new Error(`Failed to create Collection: ${res.status}`);
@@ -46,11 +46,11 @@ export const RestClient: CollectionClient = {
     return transformResponse(proto, protoToCollection);
   },
 
-  async updateCollection(id: string, collection: Collection) {
+  async updateCollection(id: string, req: UpdateCollectionRequest) {
     const res = await fetch(`/v1/collections/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(collection),
+      body: JSON.stringify(req),
     });
     if (!res.ok) {
       throw new Error(`Failed to update Collection '${id}': ${res.status}`);

@@ -31,7 +31,8 @@ const CollectionBubbleChart = ({ children }: { children: BubbleNode[] }) => {
   }, []);
 
   // Radius Scaling
-  const r = 20;
+  const r = 50;
+  const small_r = 30;
 
   // Color scale persists across renders
   const color = useMemo(() => d3.scaleOrdinal(d3.schemeCategory10), []);
@@ -51,7 +52,9 @@ const CollectionBubbleChart = ({ children }: { children: BubbleNode[] }) => {
       // Force for 'border' of nodes creates collisions
       .force(
         "collide",
-        d3.forceCollide<BubbleNode>((d) => r * d.radius + 6).iterations(12),
+        d3
+          .forceCollide<BubbleNode>((d) => r * d.radius + (r - small_r))
+          .iterations(12),
       )
       // Inter-node gravity
       .force(
@@ -86,16 +89,16 @@ const CollectionBubbleChart = ({ children }: { children: BubbleNode[] }) => {
             <g>
               <circle r={r * d.radius} fill={color(d.group)} />
               {/* Add */}
-              <circle r={10} cx={r * d.radius} fill="red" />
+              <circle r={small_r} cx={r * d.radius} fill="red" />
               {/* Inspect */}
               <circle
-                r={10}
+                r={small_r}
                 cx={(r * d.radius) / Math.sqrt(2)}
                 cy={(r * d.radius) / Math.sqrt(2)}
                 fill="green"
               />
               {/* More */}
-              <circle r={10} cy={r * d.radius} fill="blue" />
+              <circle r={small_r} cy={r * d.radius} fill="blue" />
             </g>
           </g>
         ))}

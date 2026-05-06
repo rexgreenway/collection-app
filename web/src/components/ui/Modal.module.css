@@ -1,0 +1,46 @@
+.PageBackground {
+  /* Fixed position across the whole page */
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 2;
+
+  /* Position Modal in center of the screen */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* Background blur */
+  backdrop-filter: blur(5px);
+}
+
+.Modal {
+  /* Modal content cannot be bigger than 80% of the screen */
+  max-height: 80vh;
+  max-width: 80vw;
+
+  /* Positions elements inside the Modal */
+  /* ! Required for proper scaling ! */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Scales Images properly to share space with other modal elements */
+.Modal img {
+  min-height: 0;
+  flex: 0 1 auto;
+  width: auto;
+  max-width: 100%;
+}
+
+.CloseButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
