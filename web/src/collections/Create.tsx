@@ -44,7 +44,7 @@ const Create = () => {
       <CircleButton
         onClick={() => setModalOpen(true)}
         // text="Create Collection"
-        Icon={<AddIcon />}
+        icon={AddIcon}
       />
 
       {modalOpen && (

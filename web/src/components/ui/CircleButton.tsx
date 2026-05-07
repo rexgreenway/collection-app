@@ -1,19 +1,23 @@
-import type { ReactNode } from "react";
+import type { SvgIconComponent } from "@mui/icons-material";
 
 import styles from "./CircleButton.module.css";
 
 interface CircleButtonProps {
   onClick: () => void;
   text?: string;
-  Icon?: ReactNode;
+  icon?: SvgIconComponent;
 }
 
-const CircleButton = ({ onClick, text, Icon }: CircleButtonProps) => (
+const CircleButton = ({
+  onClick,
+  text,
+  icon: IconComponent,
+}: CircleButtonProps) => (
   <button
-    className={`${styles.Button} ${Icon && styles.Icon}`}
+    className={`${styles.Button} ${IconComponent && styles.Icon}`}
     onClick={onClick}
   >
-    {text ?? Icon}
+    {text ?? (IconComponent && <IconComponent />)}
   </button>
 );
 

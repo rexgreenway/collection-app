@@ -78,9 +78,15 @@ const Option = ({ name, onClick }: { name: string; onClick?: () => void }) => (
   </p>
 );
 
-const Icon = ({ icon: IconComponent }: { icon: SvgIconComponent }) => (
+const Icon = ({
+  icon: IconComponent,
+  onClick,
+}: {
+  icon: SvgIconComponent;
+  onClick?: () => void;
+}) => (
   <div className={styles.Icon}>
-    <IconComponent />
+    <IconComponent onClick={onClick} />
   </div>
 );
 

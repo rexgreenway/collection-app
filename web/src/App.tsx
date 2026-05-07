@@ -1,8 +1,4 @@
 import { useEffect } from "react";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
-
-import { useTheme } from "./contexts";
 
 import { useCollectionStore } from "./store/collection";
 
@@ -14,11 +10,6 @@ import CreateCollection from "./collections/Create";
 import styles from "./App.module.css";
 
 const App = () => {
-  // THEME CONTEXT
-  const { theme, toggleTheme } = useTheme();
-  const title =
-    theme === "dark" ? "Switch to Light mode" : "Switch to Dark mode";
-
   const collections = useCollectionStore((s) => s.collections);
   const fetchCollections = useCollectionStore((s) => s.fetchCollections);
 
@@ -33,10 +24,6 @@ const App = () => {
         <Header />
 
         <footer className={styles.Footer}>
-          <div onClick={toggleTheme} title={title}>
-            {theme === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
-          </div>
-
           {/* This is just the Button... This feels wrong to have this here */}
           <CreateCollection />
         </footer>

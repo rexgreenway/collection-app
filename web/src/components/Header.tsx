@@ -1,10 +1,9 @@
-import SettingsIcon from "@mui/icons-material/Settings";
-
 import Menu from "./ui/Menu";
 
 import Logo from "../assets/collection-app-v1.svg?react";
 
 import styles from "./Header.module.css";
+import Settings from "../settings/Settings";
 
 const Header = () => {
   return (
@@ -32,9 +31,7 @@ const Header = () => {
 
         {/* RIGHT */}
         <div>
-          <Menu>
-            <Menu.Icon icon={SettingsIcon} />
-          </Menu>
+          <Settings />
         </div>
       </header>
     </>

@@ -19,7 +19,7 @@
 /* TO BE MOVED TO OWN COMPONENT ?? */
 .Footer {
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
 
   justify-content: space-between;
 }
