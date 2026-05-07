@@ -1,11 +1,15 @@
+import { useNavigate } from "react-router";
+import { Settings } from "@mui/icons-material";
+
 import Menu from "./ui/Menu";
 
 import Logo from "../assets/collection-app-v1.svg?react";
 
 import styles from "./Header.module.css";
-import Settings from "../settings/Settings";
 
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       <header className={styles.Header}>
@@ -31,7 +35,9 @@ const Header = () => {
 
         {/* RIGHT */}
         <div>
-          <Settings />
+          <Menu>
+            <Menu.Icon icon={Settings} onClick={() => navigate("/settings")} />
+          </Menu>
         </div>
       </header>
     </>

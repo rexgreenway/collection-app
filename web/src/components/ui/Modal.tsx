@@ -2,7 +2,6 @@ import { type ReactNode, useEffect } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import styles from "./Modal.module.css";
-import { createPortal } from "react-dom";
 
 interface ModalProps {
   close: () => void;
@@ -17,9 +16,6 @@ const Modal = ({
   children,
   className,
 }: ModalProps) => {
-  const modalMount = document.getElementById("modal-root");
-  if (!modalMount) return null;
-
   // Add ability to close with Escape Key
   if (allowClose) {
     useEffect(() => {
@@ -35,7 +31,7 @@ const Modal = ({
     }, [close]);
   }
 
-  return createPortal(
+  return (
     <div id="modal" className={styles.PageBackground}>
       {/* DON'T KNOW IF I WANT THIS CLOSE FUNCTIONALITY */}
       {/* MAYBE A CANCEL INSTEAD */}
@@ -47,8 +43,7 @@ const Modal = ({
         />
       )}
       <div className={`${styles.Modal} ${className}`}>{children}</div>
-    </div>,
-    modalMount,
+    </div>
   );
 };
 

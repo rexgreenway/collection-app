@@ -85,8 +85,8 @@ const Icon = ({
   icon: SvgIconComponent;
   onClick?: () => void;
 }) => (
-  <div className={styles.Icon}>
-    <IconComponent onClick={onClick} />
+  <div className={styles.Icon} onClick={onClick}>
+    <IconComponent />
   </div>
 );
 
