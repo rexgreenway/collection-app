@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { Add } from "@mui/icons-material";
 
-import PageLayout from "../components/PageLayout";
+import PageLayout from "../layout/PageLayout";
 import CircleButton from "../components/ui/CircleButton";
 
 import styles from "./Items.module.css";

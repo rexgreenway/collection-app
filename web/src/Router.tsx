@@ -1,6 +1,6 @@
 import { createHashRouter, Navigate, RouterProvider } from "react-router";
 
-import App from "./App";
+import App from "./layout/AppLayout";
 
 import CreateCollectionModal from "./collections/CreateModal";
 import CollectionsPage, { collectionsLoader } from "./collections/Page";
@@ -14,6 +14,8 @@ const router = createHashRouter([
     element: <App />,
     errorElement: <h1>Something Went Wrong</h1>,
     children: [
+      { path: "test", element: <h1>TESTING</h1> },
+
       { index: true, element: <Navigate to="collections" replace /> },
 
       {

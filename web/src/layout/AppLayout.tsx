@@ -1,15 +1,16 @@
 import { Outlet } from "react-router";
 
-import Header from "./components/Header";
-
-import styles from "./App.module.css";
+import Header from "./Header";
+import Footer from "./Footer";
 
 const App = () => {
   return (
-    <div id="app" className={styles.App}>
+    <div id="app">
       <Header />
 
       <Outlet />
+
+      <Footer />
     </div>
   );
 };

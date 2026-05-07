@@ -1,17 +1,26 @@
-import { useRef, useEffect, useState, useMemo, useLayoutEffect } from "react";
+import { useRef, useEffect, useState, useLayoutEffect, useMemo } from "react";
 
 import * as d3 from "d3";
 
-import type { BubbleNode } from "./types";
+import type { BubbleComponent, BubbleNode } from "./types";
 
 import styles from "./Bubble.module.css";
 
+type BubbleChartProps = {
+  data: BubbleNode[];
+  BubbleComponent: React.ComponentType<BubbleComponent>;
+};
+
 /**
- * Bubble defines a component that renders a D3.js powered Bubble Plot given
- * children elements that satisfy the Node interface.
+ * BubbleChart defines a component that renders a D3.js powered Bubble
+ * Chart Visualisation.
  *
+ * @param props.data - Chart data fulfilling the BubbleNode interface.
+ * @param props.BubbleComponent - Bubble component to render.
+ *
+ * @returns The rendered bubble chart
  */
-const CollectionBubbleChart = ({ children }: { children: BubbleNode[] }) => {
+const BubbleChart = ({ data, BubbleComponent }: BubbleChartProps) => {
   // divRef: references plot's container
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -40,9 +49,9 @@ const CollectionBubbleChart = ({ children }: { children: BubbleNode[] }) => {
   // Simulated node positions
   const [simulatedNodes, setSimulatedNodes] = useState<BubbleNode[]>([]);
 
-  // Run d3 simulation (math only, no DOM manipulation)
+  // Run d3 simulation (maths only, no DOM manipulation)
   useLayoutEffect(() => {
-    const nodes: BubbleNode[] = children.map((c) => ({ ...c }));
+    const nodes: BubbleNode[] = data.map((c) => ({ ...c }));
 
     const simulation = d3
       .forceSimulation(nodes)
@@ -70,7 +79,7 @@ const CollectionBubbleChart = ({ children }: { children: BubbleNode[] }) => {
     return () => {
       simulation.stop();
     };
-  }, [children]);
+  }, [data]);
 
   // Must set an explicit height for the top level div (no % values) otherwise
   // run into a `Maximum update depth exceeded.` Error.
@@ -83,28 +92,15 @@ const CollectionBubbleChart = ({ children }: { children: BubbleNode[] }) => {
         viewBox={`${-width / 2} ${-height / 2} ${width} ${height}`}
       >
         {simulatedNodes.map((d) => (
-          // CAN TURN THESE INTO REACT COMPONENTS
-          <g key={d.group} transform={`translate(${d.x}, ${d.y})`}>
-            {/* Collection -> Group with the circles inside, parent group controls the positions */}
-            <g>
-              <circle r={r * d.radius} fill={color(d.group)} />
-              {/* Add */}
-              <circle r={small_r} cx={r * d.radius} fill="red" />
-              {/* Inspect */}
-              <circle
-                r={small_r}
-                cx={(r * d.radius) / Math.sqrt(2)}
-                cy={(r * d.radius) / Math.sqrt(2)}
-                fill="green"
-              />
-              {/* More */}
-              <circle r={small_r} cy={r * d.radius} fill="blue" />
-            </g>
-          </g>
+          <BubbleComponent
+            key={d.group}
+            node={d}
+            {...(d.color !== undefined ? { color: color(d.group) } : {})}
+          />
         ))}
       </svg>
     </div>
   );
 };
 
-export default CollectionBubbleChart;
+export default BubbleChart;

@@ -1,0 +1,79 @@
+/* General Layout */
+
+.Main {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  height: 100vh;
+  width: 100vw;
+}
+
+.Actions {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: var(--main-z-index);
+
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 1rem;
+
+  padding: 10vw;
+  box-sizing: border-box; /* so padding doesn't overflow the width */
+
+  pointer-events: none;
+  * {
+    pointer-events: all;
+  }
+}
+
+/* Header */
+
+.Header {
+  position: fixed;
+  z-index: var(--main-z-index);
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 10vw;
+  width: 100%;
+  box-sizing: border-box;
+
+  pointer-events: none;
+  * {
+    pointer-events: all;
+  }
+}
+
+.Logo {
+  cursor: pointer;
+  height: 4rem;
+
+  circle,
+  path {
+    stroke: var(--text) !important;
+  }
+}
+
+.HeaderLeft {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+}
+
+.HeaderRight {
+}
+
+/* Footer */
+
+.Footer {
+  position: fixed;
+  bottom: 0;
+
+  z-index: var(--main-z-index);
+}

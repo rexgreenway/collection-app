@@ -1,0 +1,17 @@
+.Bubble {
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  pointer-events: all;
+}
+
+.Bubble:hover {
+  opacity: 0.8;
+}
+
+.Circle {
+  stroke: var(--text);
+  stroke-width: 2;
+
+  fill: green;
+}

@@ -6,6 +6,8 @@
 :root {
   --background: #54b3c4;
   --text: black;
+
+  --main-z-index: 1;
 }
 
 [data-theme="dark"] {

@@ -7,6 +7,16 @@
 }
 
 .ActionButtons {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+
+  z-index: var(--main-z-index);
+
+  padding: 10vw;
+
   display: flex;
   flex-direction: row-reverse;
+
+  box-sizing: border-box; /* so padding doesn't overflow the width */
 }

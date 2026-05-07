@@ -52,7 +52,6 @@
 
 .Dropdown {
   position: absolute;
-  z-index: 1;
   top: 110%; /* Float the drop down below option slightly */
 
   display: flex;

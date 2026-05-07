@@ -5,11 +5,11 @@ import { Add } from "@mui/icons-material";
 import { useCollectionStore } from "../store/collection";
 import { useViewStore } from "../store/view";
 
-import PageLayout from "../components/PageLayout";
-import CollectionBubbleChart from "../components/d3/CollectionBubble";
+import PageLayout from "../layout/PageLayout";
 import CircleButton from "../components/ui/CircleButton";
+import BubbleChart from "../components/d3/BubbleChart";
 
-import styles from "./Collections.module.css";
+import { SimpleBubble } from "./Bubble";
 
 // Fetches Data from the API ahead of render
 export const collectionsLoader = async () => {
@@ -25,22 +25,26 @@ const Page = () => {
   // subscribes to the Zustand store (live data)
   const collections = useCollectionStore((s) => s.collections);
 
-  const bubbleData = useMemo(
-    () => collections.map((c) => ({ group: c.name, radius: 2 })),
+  const bubbles = useMemo(
+    () =>
+      collections.map((c) =>
+        c.name != "rex"
+          ? { group: c.name, radius: 2 }
+          : { group: c.name, radius: 2, color: "blue" },
+      ),
     [collections],
   );
 
+  const collectionActions = (
+    <CircleButton onClick={() => navigate("create")} icon={Add} />
+  );
+
   return (
-    <PageLayout>
-      {/* WANT THIS TO BE AN OUTLET DEPENDING ON VIEW */}
+    <PageLayout actions={collectionActions}>
       {view === "bubble" && (
-        <CollectionBubbleChart>{bubbleData}</CollectionBubbleChart>
+        <BubbleChart data={bubbles} BubbleComponent={SimpleBubble} />
       )}
       {/* {view === "table" && <CollectionTable />} */}
-
-      <div className={styles.ActionButtons}>
-        <CircleButton onClick={() => navigate("create")} icon={Add} />
-      </div>
     </PageLayout>
   );
 };
