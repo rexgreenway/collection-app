@@ -5,3 +5,8 @@
   border: 0.4rem solid var(--text);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+.ActionButtons {
+  display: flex;
+  flex-direction: row-reverse;
+}

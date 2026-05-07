@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Settings } from "@mui/icons-material";
 
 import Menu from "./ui/Menu";
@@ -9,6 +9,7 @@ import styles from "./Header.module.css";
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <>
@@ -36,7 +37,10 @@ const Header = () => {
         {/* RIGHT */}
         <div>
           <Menu>
-            <Menu.Icon icon={Settings} onClick={() => navigate("/settings")} />
+            <Menu.Icon
+              icon={Settings}
+              onClick={() => navigate(`${location.pathname}/settings`)}
+            />
           </Menu>
         </div>
       </header>
