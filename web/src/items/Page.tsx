@@ -14,13 +14,13 @@ export const itemsLoader = async () => {
 const Page = () => {
   const navigate = useNavigate();
 
-  return (
-    <PageLayout>
-      <h2>ITEMS PAGE</h2>
+  const itemsActions = (
+    <CircleButton onClick={() => navigate(".")} icon={Add} />
+  );
 
-      <div className={styles.ActionButtons}>
-        <CircleButton onClick={() => navigate("create")} icon={Add} />
-      </div>
+  return (
+    <PageLayout actions={itemsActions}>
+      <h2>ITEMS PAGE</h2>
     </PageLayout>
   );
 };

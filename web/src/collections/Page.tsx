@@ -27,11 +27,14 @@ const Page = () => {
 
   const bubbles = useMemo(
     () =>
-      collections.map((c) =>
-        c.name != "rex"
-          ? { group: c.name, radius: 2 }
-          : { group: c.name, radius: 2, color: "blue" },
-      ),
+      collections.map((c) => ({
+        id: c.id,
+        group: c.name,
+        radius: 2,
+        color: "blue",
+        text: "best collection",
+        size: 40,
+      })),
     [collections],
   );
 

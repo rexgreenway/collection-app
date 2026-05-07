@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router";
 import type { BubbleComponent } from "../components/d3/types";
 
 import styles from "./Bubble.module.css";
 
 export const SimpleBubble = ({ node }: BubbleComponent) => {
+  const navigate = useNavigate();
+
   const r = 50;
 
   return (
@@ -10,12 +13,31 @@ export const SimpleBubble = ({ node }: BubbleComponent) => {
       className={styles.Bubble}
       key={node.group}
       transform={`translate(${node.x}, ${node.y})`}
+      onClick={() => navigate(`./${node.id}`)}
     >
       <circle
         className={styles.Circle}
         r={r * node.radius}
         style={node.color ? { fill: node.color } : undefined}
       />
+      {node.text && (
+        <text
+          textAnchor="middle"
+          dominantBaseline="central"
+          className={styles.Text}
+        >
+          {node.text}
+        </text>
+      )}
+      {node.size && (
+        <text
+          textAnchor="middle"
+          dominantBaseline="central"
+          className={styles.Size}
+        >
+          {node.size}
+        </text>
+      )}
     </g>
   );
 };

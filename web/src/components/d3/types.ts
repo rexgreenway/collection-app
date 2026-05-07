@@ -13,8 +13,13 @@ export interface BubbleNode extends SimulationNodeDatum {
   group: string;
   radius: number;
 
-  // Optional Customisation Fields
+  // Identifying Fields
+  id: string;
+
+  // Optional Customisation / Styling Fields
   color?: string;
+  text?: string;
+  size?: number;
 }
 
 /**
