@@ -2,9 +2,12 @@ import { createHashRouter, Navigate, RouterProvider } from "react-router";
 
 import App from "./layout/AppLayout";
 
-import CreateCollectionModal from "./collections/CreateModal";
-import CollectionsPage, { collectionsLoader } from "./collections/Page";
-import ItemsPage, { itemsLoader } from "./items/Page";
+import CollectionsPage, {
+  CreateModal,
+  collectionsLoader,
+  COLLECTIONS_CONTEXT,
+} from "./collections";
+import ItemsPage, { itemsLoader, ITEMS_CONTEXT } from "./items";
 
 import SettingsModal from "./settings/SettingsModal";
 
@@ -25,11 +28,11 @@ const router = createHashRouter([
         children: [
           {
             path: "settings",
-            element: <SettingsModal context="collections" />,
+            element: <SettingsModal context={COLLECTIONS_CONTEXT} />,
           },
 
           // Collection Actions
-          { path: "create", element: <CreateCollectionModal /> },
+          { path: "create", element: <CreateModal /> },
         ],
       },
 
@@ -43,7 +46,10 @@ const router = createHashRouter([
             element: <ItemsPage />,
             loader: itemsLoader,
             children: [
-              { path: "settings", element: <SettingsModal context="items" /> },
+              {
+                path: "settings",
+                element: <SettingsModal context={ITEMS_CONTEXT} />,
+              },
 
               // Items Actions
               // { path: "create", element: <CreateItemModal /> },

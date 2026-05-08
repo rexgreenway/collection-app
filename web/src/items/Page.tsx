@@ -6,11 +6,6 @@ import CircleButton from "../components/ui/CircleButton";
 
 import styles from "./Items.module.css";
 
-export const itemsLoader = async () => {
-  // await useItemStore.getState().fetchCollections();
-  return null;
-};
-
 const Page = () => {
   const navigate = useNavigate();
 

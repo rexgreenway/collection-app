@@ -11,12 +11,6 @@ import BubbleChart from "../components/d3/BubbleChart";
 
 import { SimpleBubble } from "./Bubble";
 
-// Fetches Data from the API ahead of render
-export const collectionsLoader = async () => {
-  await useCollectionStore.getState().fetchCollections();
-  return null;
-};
-
 const Page = () => {
   const navigate = useNavigate();
 

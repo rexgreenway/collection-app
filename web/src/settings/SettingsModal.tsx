@@ -5,6 +5,11 @@ import { Settings, DarkMode, LightMode } from "@mui/icons-material";
 import { useTheme } from "../contexts";
 
 import Modal from "../components/ui/Modal";
+import {
+  COLLECTIONS_CONTEXT,
+  Settings as CollectionSettings,
+} from "../collections";
+import { ITEMS_CONTEXT, Settings as ItemsSettings } from "../items";
 
 import styles from "./Settings.module.css";
 
@@ -31,9 +36,18 @@ const SettingsModal = ({ context }: { context: SettingsContext }) => {
 
       <Modal.Line />
 
-      <h2>{context} Specific Settings go here</h2>
+      <ContextSettings context={context} />
     </Modal>
   );
+};
+
+const ContextSettings = ({ context }: { context: string }) => {
+  switch (context) {
+    case COLLECTIONS_CONTEXT:
+      return <CollectionSettings />;
+    case ITEMS_CONTEXT:
+      return <ItemsSettings />;
+  }
 };
 
 const ChangeThemeToggle = () => {
