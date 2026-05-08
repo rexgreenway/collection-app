@@ -50,10 +50,6 @@ a {
   text-decoration: none;
 }
 
-span {
-  background-color: var(--text);
-}
-
 svg {
   display: block;
   color: var(--text);

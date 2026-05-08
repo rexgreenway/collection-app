@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect } from "react";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { type SvgIconComponent, CloseRounded } from "@mui/icons-material";
 
 import styles from "./Modal.module.css";
 
@@ -36,7 +36,7 @@ const Modal = ({
       {/* DON'T KNOW IF I WANT THIS CLOSE FUNCTIONALITY */}
       {/* MAYBE A CANCEL INSTEAD */}
       {allowClose && (
-        <CloseRoundedIcon
+        <CloseRounded
           fontSize="large"
           className={styles.CloseButton}
           onClick={close}
@@ -46,5 +46,44 @@ const Modal = ({
     </div>
   );
 };
+
+const Title = ({
+  title,
+  subtitle,
+  icon: IconComponent,
+}: {
+  title: string;
+  subtitle?: string;
+  icon?: SvgIconComponent;
+}) => (
+  <div className={styles.Title}>
+    {IconComponent && <IconComponent />}
+    <div>
+      <h1>{title}</h1>
+      {subtitle && <p>{subtitle}</p>}
+    </div>
+  </div>
+);
+
+const Section = ({
+  className,
+  children,
+  sectionTitle,
+}: {
+  className: string;
+  children: ReactNode;
+  sectionTitle?: string;
+}) => (
+  <section className={`${styles.Section} ${className}`}>
+    {sectionTitle && <h3>{sectionTitle}</h3>}
+    {children}
+  </section>
+);
+
+const Line = () => <span className={styles.Line} />;
+
+Modal.Title = Title;
+Modal.Section = Section;
+Modal.Line = Line;
 
 export default Modal;

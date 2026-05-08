@@ -44,3 +44,18 @@
   right: 10px;
   cursor: pointer;
 }
+
+.Title {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+}
+
+.Line {
+  width: 100%;
+  height: 1px;
+  background-color: var(--text);
+  opacity: 0.5;
+  align-self: stretch;
+}
