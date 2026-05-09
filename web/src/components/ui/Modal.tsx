@@ -66,12 +66,12 @@ const Title = ({
 );
 
 const Section = ({
-  className,
   children,
+  className,
   sectionTitle,
 }: {
-  className: string;
   children: ReactNode;
+  className?: string;
   sectionTitle?: string;
 }) => (
   <section className={`${styles.Section} ${className}`}>

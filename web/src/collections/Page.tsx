@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useNavigate } from "react-router";
 import { Add } from "@mui/icons-material";
 
 import { useCollectionStore } from "../store/collection";
@@ -10,11 +9,12 @@ import CircleButton from "../components/ui/CircleButton";
 import BubbleChart from "../components/d3/BubbleChart";
 
 import { SimpleBubble } from "./Bubble";
+import { useModalStore } from "../store/modal";
 
 const Page = () => {
-  const navigate = useNavigate();
-
   const view = useViewStore((s) => s.view);
+
+  const openModal = useModalStore((s) => s.openModal);
 
   // subscribes to the Zustand store (live data)
   const collections = useCollectionStore((s) => s.collections);
@@ -33,7 +33,7 @@ const Page = () => {
   );
 
   const collectionActions = (
-    <CircleButton onClick={() => navigate("create")} icon={Add} />
+    <CircleButton onClick={() => openModal("create-collection")} icon={Add} />
   );
 
   return (

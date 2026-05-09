@@ -3,12 +3,12 @@ import collectionsLoader from "./loader";
 import Settings from "./Settings";
 import CreateModal from "./CreateModal";
 
-const COLLECTIONS_CONTEXT = "collections";
+const COLLECTIONS_PATH = "collections";
 
 export {
   Page as default,
   collectionsLoader,
-  COLLECTIONS_CONTEXT,
+  COLLECTIONS_PATH,
   CreateModal,
   Settings,
 };

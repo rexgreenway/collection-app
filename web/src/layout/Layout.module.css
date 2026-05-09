@@ -19,7 +19,7 @@
   flex-direction: row-reverse;
   gap: 1rem;
 
-  padding: 10vw;
+  padding: 2rem;
   box-sizing: border-box; /* so padding doesn't overflow the width */
 
   pointer-events: none;
@@ -38,8 +38,9 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
 
-  padding: 10vw;
+  padding: 2rem;
   width: 100%;
   box-sizing: border-box;
 

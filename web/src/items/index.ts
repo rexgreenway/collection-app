@@ -2,6 +2,6 @@ import Page from "./Page";
 import itemsLoader from "./loader";
 import Settings from "./Settings";
 
-const ITEMS_CONTEXT = "items";
+const ITEMS_PATH = "items";
 
-export { Page as default, itemsLoader, ITEMS_CONTEXT, Settings };
+export { Page as default, itemsLoader, ITEMS_PATH, Settings };

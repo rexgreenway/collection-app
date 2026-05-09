@@ -22,15 +22,13 @@ const PageLayout = ({
       {/* Main */}
       <div id="main" className={styles.Main}>
         {children}
+        {/* <Outlet /> */}
       </div>
 
       {/* ACTIONS */}
       <div id="actions" className={styles.Actions}>
         {actions}
       </div>
-
-      {/* Modal Mount */}
-      <Outlet />
     </>
   );
 };

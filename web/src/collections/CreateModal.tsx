@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
 
 import type { CreateCollectionRequest } from "../api/types";
 
@@ -9,10 +8,9 @@ import Modal from "../components/ui/Modal";
 import Form from "../components/ui/Form";
 
 import styles from "./Collections.module.css";
+import { useModalStore } from "../store/modal";
 
 const CreateModal = () => {
-  const navigate = useNavigate();
-
   // API state wrapping
   const createCollection = useCollectionStore((s) => s.createCollection);
 
@@ -39,7 +37,7 @@ const CreateModal = () => {
     setCreateCollectionData(null);
   };
 
-  const close = () => navigate("..");
+  const close = useModalStore((s) => s.closeModal);
 
   return (
     <Modal className={styles.Modal} close={close}>

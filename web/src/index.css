@@ -40,7 +40,8 @@ h5 {
 }
 
 p,
-a {
+a,
+text {
   margin: 0;
 
   color: var(--text);

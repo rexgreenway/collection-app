@@ -1,30 +1,30 @@
-import { useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { Switch, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Settings, DarkMode, LightMode } from "@mui/icons-material";
 
 import { useTheme } from "../contexts";
 
+import { useModalStore } from "../store/modal";
+
 import Modal from "../components/ui/Modal";
 import {
-  COLLECTIONS_CONTEXT,
+  COLLECTIONS_PATH,
   Settings as CollectionSettings,
 } from "../collections";
-import { ITEMS_CONTEXT, Settings as ItemsSettings } from "../items";
+import { ITEMS_PATH, Settings as ItemsSettings } from "../items";
 
 import styles from "./Settings.module.css";
 
-type SettingsContext = "collections" | "items";
-
 // Should this be a Menu item?? How to link nav and these components?
-const SettingsModal = ({ context }: { context: SettingsContext }) => {
-  const navigate = useNavigate();
+const SettingsModal = () => {
+  const location = useLocation();
 
   return (
-    <Modal className={styles.Modal} close={() => navigate("..")}>
+    <Modal className={styles.Modal} close={useModalStore((s) => s.closeModal)}>
       <Modal.Title
         icon={Settings}
         title="Settings"
-        subtitle={`Change ${context} Settings Here`}
+        // subtitle={`Change ${context} Settings Here`}
       />
 
       <Modal.Line />
@@ -36,16 +36,16 @@ const SettingsModal = ({ context }: { context: SettingsContext }) => {
 
       <Modal.Line />
 
-      <ContextSettings context={context} />
+      <ContextSettings context={location.pathname} />
     </Modal>
   );
 };
 
 const ContextSettings = ({ context }: { context: string }) => {
-  switch (context) {
-    case COLLECTIONS_CONTEXT:
+  switch (context.split("/").pop()) {
+    case COLLECTIONS_PATH:
       return <CollectionSettings />;
-    case ITEMS_CONTEXT:
+    case ITEMS_PATH:
       return <ItemsSettings />;
   }
 };

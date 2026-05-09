@@ -1,15 +1,12 @@
 import { createHashRouter, Navigate, RouterProvider } from "react-router";
 
-import App from "./layout/AppLayout";
+import App from "./layout/App";
 
 import CollectionsPage, {
-  CreateModal,
   collectionsLoader,
-  COLLECTIONS_CONTEXT,
+  COLLECTIONS_PATH,
 } from "./collections";
-import ItemsPage, { itemsLoader, ITEMS_CONTEXT } from "./items";
-
-import SettingsModal from "./settings/SettingsModal";
+import ItemsPage, { itemsLoader, ITEMS_PATH } from "./items";
 
 const router = createHashRouter([
   {
@@ -19,41 +16,24 @@ const router = createHashRouter([
     children: [
       { path: "test", element: <h1>TESTING</h1> },
 
-      { index: true, element: <Navigate to="collections" replace /> },
+      { index: true, element: <Navigate to={COLLECTIONS_PATH} replace /> },
 
       {
-        path: "collections",
+        path: COLLECTIONS_PATH,
         element: <CollectionsPage />,
         loader: collectionsLoader,
-        children: [
-          {
-            path: "settings",
-            element: <SettingsModal context={COLLECTIONS_CONTEXT} />,
-          },
-
-          // Collection Actions
-          { path: "create", element: <CreateModal /> },
-        ],
+        children: [],
       },
 
-      // SHOULD ADD LOADERS TO CERTAIN ONES HERE -> ITEMS
       {
-        path: "collections/:id",
+        path: `${COLLECTIONS_PATH}/:id`,
         children: [
-          { index: true, element: <Navigate to="items" replace /> },
+          { index: true, element: <Navigate to={ITEMS_PATH} replace /> },
           {
-            path: "items",
+            path: ITEMS_PATH,
             element: <ItemsPage />,
             loader: itemsLoader,
-            children: [
-              {
-                path: "settings",
-                element: <SettingsModal context={ITEMS_CONTEXT} />,
-              },
-
-              // Items Actions
-              // { path: "create", element: <CreateItemModal /> },
-            ],
+            children: [],
           },
         ],
       },
