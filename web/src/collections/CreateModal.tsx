@@ -2,13 +2,13 @@ import { useState } from "react";
 
 import type { CreateCollectionRequest } from "../api/types";
 
+import { useModalStore } from "../store/modal";
 import { useCollectionStore } from "../store/collection";
 
 import Modal from "../components/ui/Modal";
 import Form from "../components/ui/Form";
 
 import styles from "./Collections.module.css";
-import { useModalStore } from "../store/modal";
 
 const CreateModal = () => {
   // API state wrapping

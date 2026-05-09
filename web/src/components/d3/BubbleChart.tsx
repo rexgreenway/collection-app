@@ -1,26 +1,24 @@
-import { useRef, useEffect, useState, useLayoutEffect, useMemo } from "react";
+import {
+  useRef,
+  useEffect,
+  useState,
+  useLayoutEffect,
+  type ComponentType,
+} from "react";
 
 import * as d3 from "d3";
 
-import type { BubbleComponent, BubbleNode } from "./types";
+import type { BubbleNode } from "./types";
 
 import styles from "./Bubble.module.css";
 
-type BubbleChartProps = {
-  data: BubbleNode[];
-  BubbleComponent: React.ComponentType<BubbleComponent>;
-};
-
-/**
- * BubbleChart defines a component that renders a D3.js powered Bubble
- * Chart Visualisation.
- *
- * @param props.data - Chart data fulfilling the BubbleNode interface.
- * @param props.BubbleComponent - Bubble component to render.
- *
- * @returns The rendered bubble chart
- */
-const BubbleChart = ({ data, BubbleComponent }: BubbleChartProps) => {
+const BubbleChart = <T extends BubbleNode>({
+  data,
+  element: Element,
+}: {
+  data: T[];
+  element: ComponentType<T>;
+}) => {
   // divRef: references plot's container
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -44,14 +42,14 @@ const BubbleChart = ({ data, BubbleComponent }: BubbleChartProps) => {
   const small_r = 30;
 
   // Color scale persists across renders
-  const color = useMemo(() => d3.scaleOrdinal(d3.schemeCategory10), []);
+  // const color = useMemo(() => d3.scaleOrdinal(d3.schemeCategory10), []);
 
   // Simulated node positions
-  const [simulatedNodes, setSimulatedNodes] = useState<BubbleNode[]>([]);
+  const [simulatedNodes, setSimulatedNodes] = useState<T[]>([]);
 
   // Run d3 simulation (maths only, no DOM manipulation)
   useLayoutEffect(() => {
-    const nodes: BubbleNode[] = data.map((c) => ({ ...c }));
+    const nodes: T[] = data.map((c) => ({ ...c }));
 
     const simulation = d3
       .forceSimulation(nodes)
@@ -92,11 +90,10 @@ const BubbleChart = ({ data, BubbleComponent }: BubbleChartProps) => {
         viewBox={`${-width / 2} ${-height / 2} ${width} ${height}`}
       >
         {simulatedNodes.map((d) => (
-          <BubbleComponent
-            key={d.group}
-            node={d}
-            {...(d.color !== undefined ? { color: color(d.group) } : {})}
-          />
+          // Wrapped in g that handles translation
+          <g key={d.group} transform={`translate(${d.x}, ${d.y})`}>
+            <Element {...d} />
+          </g>
         ))}
       </svg>
     </div>

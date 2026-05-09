@@ -20,3 +20,11 @@
 
   box-sizing: border-box; /* so padding doesn't overflow the width */
 }
+
+.Table {
+  padding: 10%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

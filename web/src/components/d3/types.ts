@@ -12,21 +12,4 @@ export interface BubbleNode extends SimulationNodeDatum {
   // Simulation Required Fields
   group: string;
   radius: number;
-
-  // Identifying Fields
-  id: string;
-
-  // Optional Customisation / Styling Fields
-  color?: string;
-  text?: string;
-  size?: number;
-}
-
-/**
- * BubbleComponent defines the shape of the component that is rendered
- * in the BubbleChart
- */
-export interface BubbleComponent {
-  node: BubbleNode;
-  color?: string;
 }
