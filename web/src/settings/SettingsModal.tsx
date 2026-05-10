@@ -1,12 +1,14 @@
 import { useLocation } from "react-router";
-import { Switch, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Switch } from "@mui/material";
 import { Settings, DarkMode, LightMode } from "@mui/icons-material";
 
 import { useTheme } from "../contexts";
 
 import { useModalStore } from "../store/modal";
 
+import Toggle from "../components/mui/Toggle";
 import Modal from "../components/ui/Modal";
+
 import {
   COLLECTIONS_PATH,
   Settings as CollectionSettings,
@@ -56,14 +58,14 @@ const ChangeThemeToggle = () => {
   return (
     <div className={styles.Toggle}>
       <h4>Change Theme:</h4>
-      <ToggleButtonGroup value={theme} exclusive onChange={toggleTheme}>
-        <ToggleButton value="light">
+      <Toggle value={theme} exclusive onChange={toggleTheme}>
+        <Toggle.Option value="light">
           <LightMode />
-        </ToggleButton>
-        <ToggleButton value="dark">
+        </Toggle.Option>
+        <Toggle.Option value="dark">
           <DarkMode />
-        </ToggleButton>
-      </ToggleButtonGroup>
+        </Toggle.Option>
+      </Toggle>
     </div>
   );
 };

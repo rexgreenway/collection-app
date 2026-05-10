@@ -1,0 +1,13 @@
+.Button {
+  height: 2rem;
+  border-color: color-mix(in srgb, var(--text) 25%, transparent);
+}
+
+.ButtonSelected {
+  background-color: color-mix(in srgb, var(--text) 15%, transparent);
+  color: var(--text);
+}
+
+.ButtonSelected:hover {
+  background-color: color-mix(in srgb, var(--text) 25%, transparent);
+}

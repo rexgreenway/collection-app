@@ -25,16 +25,16 @@
   align-items: center;
 }
 
-.Toggle :global(.MuiToggleButton-root) {
+.ToggleButton {
   height: 2rem;
   border-color: color-mix(in srgb, var(--text) 25%, transparent);
 }
 
-.Toggle :global(.MuiToggleButton-root.Mui-selected) {
+.ToggleButtonSelected {
   background-color: color-mix(in srgb, var(--text) 15%, transparent);
   color: var(--text);
 }
 
-.Toggle :global(.MuiToggleButton-root.Mui-selected:hover) {
+.ToggleButtonSelected:hover {
   background-color: color-mix(in srgb, var(--text) 25%, transparent);
 }
