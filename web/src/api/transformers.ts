@@ -3,7 +3,7 @@ import {
   type Collection as pbCollection,
 } from "@collection-app/gen/v1";
 
-import type { Collection, ListResponse, Pagination } from "./types";
+import type { CollectionResponse, ListResponse, Pagination } from "./types";
 
 export const transformResponse = <T, V>(
   response: { data?: T },
@@ -35,9 +35,12 @@ export const transformListResponse = <T, V>(
 };
 
 // Convert a protobuf message to your plain app type
-export const protoToCollection = (proto: pbCollection): Collection => {
+export const protoToCollectionResponse = (
+  proto: pbCollection,
+): CollectionResponse => {
   return {
     id: proto.id,
     name: proto.name,
+    itemCount: proto.itemCount,
   };
 };

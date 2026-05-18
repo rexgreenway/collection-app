@@ -38,8 +38,10 @@ const BubbleChart = <T extends BubbleNode>({
   }, []);
 
   // Radius Scaling
-  const r = 50;
-  const small_r = 30;
+  const radius_scaling = 30;
+  const radius_border = 10;
+
+  const scaleRadius = (radius: number) => radius_scaling * Math.max(radius, 1);
 
   // Color scale persists across renders
   // const color = useMemo(() => d3.scaleOrdinal(d3.schemeCategory10), []);
@@ -60,13 +62,15 @@ const BubbleChart = <T extends BubbleNode>({
       .force(
         "collide",
         d3
-          .forceCollide<BubbleNode>((d) => r * d.radius + (r - small_r))
+          .forceCollide<BubbleNode>(
+            (d) => scaleRadius(d.radius) + radius_border,
+          )
           .iterations(12),
       )
       // Inter-node gravity
       .force(
         "charge",
-        d3.forceManyBody<BubbleNode>().strength((d) => r * d.radius),
+        d3.forceManyBody<BubbleNode>().strength((d) => scaleRadius(d.radius)),
       )
       .on("tick", () => {
         // Triggers rerender of whole react component
@@ -92,7 +96,7 @@ const BubbleChart = <T extends BubbleNode>({
         {simulatedNodes.map((d) => (
           // Wrapped in g that handles translation
           <g key={d.group} transform={`translate(${d.x}, ${d.y})`}>
-            <Element {...d} />
+            <Element {...d} radius={scaleRadius(d.radius)} />
           </g>
         ))}
       </svg>

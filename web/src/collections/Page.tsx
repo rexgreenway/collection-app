@@ -1,11 +1,11 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { Add, LegendToggle } from "@mui/icons-material";
 
 import { useModalStore } from "../store/modal";
 import { useCollectionStore } from "../store/collection";
 import { useViewStore } from "../store/view";
 
-import type { Collection } from "../api/types";
+import type { CollectionResponse } from "../api/types";
 
 import PageLayout from "../layout/PageLayout";
 import CircleButton from "../components/ui/CircleButton";
@@ -25,16 +25,28 @@ const Page = () => {
 
   // subscribes to the Zustand store (live data)
   const collections = useCollectionStore((s) => s.collections);
+  const getCollection = useCollectionStore((s) => s.getCollection);
 
-  const collectionData: (Collection & BubbleNode)[] = useMemo(
-    () =>
-      collections.map((c) => ({
-        ...c,
-        group: c.name,
-        radius: 2,
-      })),
-    [collections],
-  );
+  const [collectionData, setCollectionData] = useState<
+    (CollectionResponse & BubbleNode)[]
+  >([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await Promise.all(
+        collections.map(async (c) => {
+          const col = await getCollection(c.id);
+          return {
+            ...col,
+            group: col.name,
+            radius: col.itemCount,
+          };
+        }),
+      );
+      setCollectionData(data);
+    };
+    fetchData();
+  }, [collections, getCollection]);
 
   const toggleView = () => {
     switch (view) {
@@ -58,11 +70,17 @@ const Page = () => {
 
   return (
     <PageLayout actions={collectionActions}>
-      {view === "bubble" && (
-        <BubbleChart data={collectionData} element={SimpleBubble} />
-      )}
-      {view === "table" && (
-        <BasicTable data={collectionData} className={styles.Table} />
+      {collections.length === 0 ? (
+        <h1>NO COLLECTIONS FOUND</h1>
+      ) : (
+        <>
+          {view === "bubble" && (
+            <BubbleChart data={collectionData} element={SimpleBubble} />
+          )}
+          {view === "table" && (
+            <BasicTable data={collectionData} className={styles.Table} />
+          )}
+        </>
       )}
     </PageLayout>
   );

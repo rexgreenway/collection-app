@@ -20,4 +20,7 @@ type Store interface {
 
 	// DeleteCollection ???
 	DeleteCollection(collectionID string) error
+
+	// ????
+	GetItemCountByCollection(collectionID string) int32
 }

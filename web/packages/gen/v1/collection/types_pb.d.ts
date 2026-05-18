@@ -23,6 +23,11 @@ export declare type Collection = Message<"v1.collection.Collection"> & {
    * @generated from field: string name = 2;
    */
   name: string;
+
+  /**
+   * @generated from field: int32 item_count = 3;
+   */
+  itemCount: number;
 };
 
 /**

@@ -1,6 +1,11 @@
 import { create } from "zustand";
 
-type ModalType = "settings" | "create-collection" | "quickstart" | null;
+type ModalType =
+  | "settings"
+  | "create-collection"
+  | "create-items"
+  | "quickstart"
+  | null;
 
 interface ModalState {
   modal: ModalType;

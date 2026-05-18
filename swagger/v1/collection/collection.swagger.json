@@ -155,7 +155,7 @@
             "type": "string"
           },
           {
-            "name": "items",
+            "name": "item",
             "in": "body",
             "required": true,
             "schema": {
@@ -429,6 +429,11 @@
         },
         "name": {
           "type": "string"
+        },
+        "itemCount": {
+          "type": "integer",
+          "format": "int32",
+          "readOnly": true
         }
       }
     },

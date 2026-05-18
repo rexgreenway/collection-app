@@ -1,24 +1,27 @@
 import { useState } from "react";
+import { useParams } from "react-router";
 
-import type { CreateCollectionRequest } from "../api/types/requests";
+import type { CreateItemRequest } from "../api/types";
 
 import { useModalStore } from "../store/modal";
-import { useCollectionStore } from "../store/collection";
+import { useItemStore } from "../store/items";
 
 import Modal from "../components/ui/Modal";
 import Form from "../components/ui/Form";
 
-import styles from "./Collections.module.css";
+import styles from "./Items.module.css";
 
 const CreateModal = () => {
-  // API state wrapping
-  const createCollection = useCollectionStore((s) => s.createCollection);
+  const { id } = useParams();
 
-  const [createCollectionData, setCreateCollectionData] =
-    useState<CreateCollectionRequest | null>(null);
+  // API state wrapping
+  const createItem = useItemStore((s) => s.createItem);
+
+  const [createItemData, setCreateItemData] =
+    useState<CreateItemRequest | null>(null);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCreateCollectionData((prevState) => ({
+    setCreateItemData((prevState) => ({
       ...prevState,
       name: e.target.value,
     }));
@@ -29,12 +32,12 @@ const CreateModal = () => {
     e.preventDefault();
 
     // Create the collection
-    if (createCollectionData === null) return;
-    createCollection(createCollectionData).catch(console.log);
+    if (createItemData === null) return;
+    createItem(id!, createItemData).catch(console.log);
 
     // Clean up after submit
     close();
-    setCreateCollectionData(null);
+    setCreateItemData(null);
   };
 
   const close = useModalStore((s) => s.closeModal);
@@ -44,9 +47,9 @@ const CreateModal = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Field label="Name">
           <Form.Input
-            id="collection-name"
+            id="item-name"
             type="text"
-            value={createCollectionData?.name ?? ""}
+            value={createItemData?.name ?? ""}
             onChange={handleNameChange}
             placeholder="Enter Name"
             required

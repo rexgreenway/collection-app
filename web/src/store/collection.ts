@@ -1,16 +1,17 @@
 import { create } from "zustand";
 
-import type { Collection, CreateCollectionRequest } from "../api/types";
+import type { CollectionResponse, CreateCollectionRequest } from "../api/types";
 import { ApiClientFactory, ApiClientImpl } from "../api";
 
 const api = ApiClientFactory(ApiClientImpl.SESSION_STORAGE);
 
-type CollectionsState = {
-  collections: Collection[];
+interface CollectionsState {
+  collections: CollectionResponse[];
   fetchCollections: () => Promise<void>;
   createCollection: (req: CreateCollectionRequest) => Promise<void>;
   deleteCollection: (id: string) => Promise<void>;
-};
+  getCollection: (id: string) => Promise<CollectionResponse>;
+}
 
 export const useCollectionStore = create<CollectionsState>((set) => ({
   collections: [],
@@ -30,5 +31,10 @@ export const useCollectionStore = create<CollectionsState>((set) => ({
     set((state) => ({
       collections: state.collections.filter((c) => c.id !== id),
     }));
+  },
+
+  getCollection: async (id) => {
+    const res = await api.getCollection(id);
+    return res.data;
   },
 }));

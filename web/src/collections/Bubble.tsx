@@ -1,19 +1,18 @@
 import { useNavigate } from "react-router";
 
+import type { CollectionResponse } from "../api/types";
+
 import type { BubbleNode } from "../components/d3/types";
 
 import styles from "./Bubble.module.css";
-import type { Collection } from "../api/types";
 
-export const SimpleBubble = (node: Collection & BubbleNode) => {
+export const SimpleBubble = (node: CollectionResponse & BubbleNode) => {
   const navigate = useNavigate();
-
-  const r = 50;
 
   return (
     <g className={styles.Bubble} onClick={() => navigate(`./${node.id}`)}>
       {/* BUBBLE ITSELF */}
-      <circle className={styles.Circle} r={r * node.radius} fill="blue" />
+      <circle className={styles.Circle} r={node.radius} fill="blue" />
 
       {/* BUBBLE NAME */}
       <text
@@ -25,15 +24,15 @@ export const SimpleBubble = (node: Collection & BubbleNode) => {
       </text>
 
       {/* NO. OF ITEMS IN COLLECTION */}
-      {/* {node.size && (
+      {node.itemCount && (
         <text
           textAnchor="middle"
           dominantBaseline="central"
           className={styles.Size}
         >
-          {node.size}
+          {node.itemCount}
         </text>
-      )} */}
+      )}
     </g>
   );
 };

@@ -9,7 +9,7 @@ import type CollectionClient from "./interface";
 
 import type { UpdateCollectionRequest, CreateCollectionRequest } from "./types";
 import {
-  protoToCollection,
+  protoToCollectionResponse,
   transformListResponse,
   transformResponse,
 } from "./transformers";
@@ -21,7 +21,7 @@ export const RestClient: CollectionClient = {
       throw new Error(`Failed to list Collections: ${res.status}`);
     }
     const proto = fromJson(ListCollectionsResponseSchema, await res.json());
-    return transformListResponse(proto, protoToCollection);
+    return transformListResponse(proto, protoToCollectionResponse);
   },
 
   async createCollection(req: CreateCollectionRequest) {
@@ -34,7 +34,7 @@ export const RestClient: CollectionClient = {
       throw new Error(`Failed to create Collection: ${res.status}`);
     }
     const proto = fromJson(GetCollectionResponseSchema, await res.json());
-    return transformResponse(proto, protoToCollection);
+    return transformResponse(proto, protoToCollectionResponse);
   },
 
   async getCollection(id: string) {
@@ -43,7 +43,7 @@ export const RestClient: CollectionClient = {
       throw new Error(`Failed to get Collection '${id}': ${res.status}`);
     }
     const proto = fromJson(GetCollectionResponseSchema, await res.json());
-    return transformResponse(proto, protoToCollection);
+    return transformResponse(proto, protoToCollectionResponse);
   },
 
   async updateCollection(id: string, req: UpdateCollectionRequest) {
@@ -56,7 +56,7 @@ export const RestClient: CollectionClient = {
       throw new Error(`Failed to update Collection '${id}': ${res.status}`);
     }
     const proto = fromJson(GetCollectionResponseSchema, await res.json());
-    return transformResponse(proto, protoToCollection);
+    return transformResponse(proto, protoToCollectionResponse);
   },
 
   async deleteCollection(id: string) {
