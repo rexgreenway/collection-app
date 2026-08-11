@@ -14,6 +14,8 @@ message Collection {
     (google.api.field_behavior) = OUTPUT_ONLY
   ];
   string name = 2;
+
+  int32 item_count = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 message Item {

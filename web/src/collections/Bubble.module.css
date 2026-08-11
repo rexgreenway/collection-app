@@ -1,0 +1,32 @@
+.Bubble {
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  pointer-events: all;
+}
+
+.Bubble:hover {
+  opacity: 0.8;
+}
+
+.Circle {
+  stroke: var(--text);
+  stroke-width: 2;
+
+  fill: green;
+}
+
+.Text .Size {
+  fill: var(--text);
+  pointer-events: none; /* so text doesn't interfere with bubble clicks */
+  user-select: none;
+}
+
+.Text {
+  font-size: 1.2rem;
+  transform: translateY(-0.5em);
+}
+
+.Size {
+  transform: translateY(1.5em);
+}

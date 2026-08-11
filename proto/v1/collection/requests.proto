@@ -47,13 +47,13 @@ message UpdateCollectionRequest {
 message ListItemsRequest {
   string collection_id = 1 [(google.api.field_behavior) = REQUIRED];
 
-  PaginationParams pagination = 2 [(google.api.field_behavior) = OPTIONAL];
+  optional PaginationParams pagination = 2 [(google.api.field_behavior) = OPTIONAL];
 }
 
 message CreateItemRequest {
   string collection_id = 1 [(google.api.field_behavior) = REQUIRED];
 
-  Item items = 2 [(google.api.field_behavior) = REQUIRED];
+  Item item = 2 [(google.api.field_behavior) = REQUIRED];
 }
 
 message CreateItemsRequest {

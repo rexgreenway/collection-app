@@ -1,7 +1,41 @@
-# Run Server Locally
+# Collection App
+
+A self-hosted application for curating and tracking collections.
+
+# Development
+
+## Protos
+
+The Application uses Protocol Buffers to define Types and API Contracts.
+
+Proto files can be found in the [proto directory](./proto/).
+
+### Generation
+
+This repository uses `buf` to manage dependencies and generate code from proto
+files.
+
+- Generate code from proto files:
+
+```bash
+buf generate
+```
+
+## Server
+
+- Running Locally:
 
 ```bash
 ENVIRONMENT=dev go run cmd/main.go
+```
+
+## Frontend
+
+- Running Locally:
+
+```bash
+cd dev
+pnpm dev
 ```
 
 # Equivalent gRPC and cURL commands:
@@ -16,7 +50,7 @@ curl -X GET localhost:8089/v1/collections/ID_GOES_HERE
 curl -X POST -d '{ "name": "new_collection" }' localhost:8089/v1/collections
 ```
 
-# Helpful Docs:
+## Helpful Docs:
 
 ## GRPC Gateway README:
 

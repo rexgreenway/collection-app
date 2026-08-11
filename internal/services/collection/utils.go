@@ -1,8 +1,6 @@
 package collection
 
 import (
-	"fmt"
-
 	"github.com/rexgreenway/collection-app/internal/entities"
 	pb "github.com/rexgreenway/collection-app/internal/gen/v1/collection"
 )
@@ -29,8 +27,6 @@ func paginationToProto(p entities.Pagination) *pb.PaginationParams {
 		Page:     p.Page,
 		PageSize: p.PageSize,
 	}
-
-	fmt.Println("TRNAS: ", foo)
 
 	return foo
 }

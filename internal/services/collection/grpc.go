@@ -86,10 +86,14 @@ func (s *collectionServer) GetCollection(
 		return nil, status.Errorf(codes.Internal, "GetCollection %q failed: %v", id, err)
 	}
 
-	result := collectionToProto(collection)
+	itemCount := s.store.GetItemCountByCollection(id)
 
 	return &pb.GetCollectionResponse{
-		Data: result,
+		Data: &pb.Collection{
+			Id:        collection.ID,
+			Name:      collection.Name,
+			ItemCount: int32(itemCount),
+		},
 	}, nil
 }
 

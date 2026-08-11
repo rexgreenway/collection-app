@@ -1,0 +1,65 @@
+.Menu {
+  /* Scoped Vars to Menu Styling */
+  --border-radius: 0.75rem;
+  --padding: 0.5rem 0.75rem;
+  --hover-bg: rgba(80, 80, 80, 0.5);
+  --font-size: 0.875rem;
+
+  display: flex;
+  flex-direction: row;
+  gap: 0.1rem;
+  align-items: center;
+
+  background-color: rgb(100, 100, 100);
+  border-radius: 1rem;
+
+  user-select: none;
+}
+
+.Item {
+  position: relative;
+}
+
+.Text {
+  font-size: var(--font-size);
+  padding: var(--padding);
+  line-height: 1;
+}
+
+.Icon {
+  cursor: pointer;
+  padding: var(--padding);
+
+  display: flex;
+  align-items: center;
+
+  svg {
+    font-size: var(--font-size);
+  }
+}
+
+.Icon:hover,
+.Text:hover {
+  cursor: pointer;
+  background-color: var(--hover-bg);
+  border-radius: var(--border-radius);
+}
+
+.DropdownOpen {
+  background-color: rgba(80, 80, 80, 0.75);
+  border-radius: var(--border-radius);
+}
+
+.Dropdown {
+  position: absolute;
+  top: 110%; /* Float the drop down below option slightly */
+
+  display: flex;
+  flex-direction: column;
+  min-width: 200%;
+
+  background-color: rgb(120, 120, 120);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius);
+  border: 1px solid #333;
+}

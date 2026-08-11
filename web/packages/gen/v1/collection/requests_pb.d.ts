@@ -143,7 +143,7 @@ export declare type ListItemsRequest = Message<"v1.collection.ListItemsRequest">
   collectionId: string;
 
   /**
-   * @generated from field: v1.collection.PaginationParams pagination = 2;
+   * @generated from field: optional v1.collection.PaginationParams pagination = 2;
    */
   pagination?: PaginationParams;
 };
@@ -164,9 +164,9 @@ export declare type CreateItemRequest = Message<"v1.collection.CreateItemRequest
   collectionId: string;
 
   /**
-   * @generated from field: v1.collection.Item items = 2;
+   * @generated from field: v1.collection.Item item = 2;
    */
-  items?: Item;
+  item?: Item;
 };
 
 /**

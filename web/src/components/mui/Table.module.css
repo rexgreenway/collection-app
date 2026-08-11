@@ -1,0 +1,23 @@
+.Container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+.HeaderCell {
+  color: var(--text);
+  font-family: "Bebas Neue", monospace;
+}
+
+.Row:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .Row:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.Cell {
+  color: var(--text);
+  border-bottom: 1px solid var(--text);
+}

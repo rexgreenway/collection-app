@@ -1,0 +1,17 @@
+.Button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  background-color: darkblue;
+}
+
+.Icon {
+  line-height: 0;
+
+  svg {
+    fill: var(--text);
+  }
+}

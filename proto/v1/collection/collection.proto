@@ -45,7 +45,7 @@ service CollectionService {
   rpc CreateItem(CreateItemRequest) returns (GetItemResponse) {
     option (google.api.http) = {
       post: "/collections/{collection_id}/items"
-      body: "items"
+      body: "item"
     };
   }
 
