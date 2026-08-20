@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 
-	"github.com/google/uuid"
-	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -15,141 +13,10 @@ import (
 	"github.com/rexgreenway/collection-app/internal/storage"
 )
 
-// GRPC Service Type for the collection service.
-const GRPC ServiceType = "grpc"
-
-// collectionServer is the gRPC implementation of the Collection Service server.
-type grpcServer struct {
-	// This adds forward compatibility to this implementation of the server
-	pb.UnimplementedCollectionServiceServer
-
-	logger *zap.SugaredLogger
-
-	store storage.Store
-}
-
-func newGrpcServer(logger *zap.SugaredLogger, store storage.Store) *grpcServer {
-	return &grpcServer{logger: logger, store: store}
-}
-
-// ------- Collection Methods -------
-
-// ListCollections
-func (s *grpcServer) ListCollections(
-	ctx context.Context,
-	req *pb.ListCollectionsRequest,
-) (*pb.ListCollectionsResponse, error) {
-	pagination := protoToPagination(req.GetPagination())
-
-	collections, err := s.store.ListCollections(&pagination)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "ListCollections failed: %v", err)
-	}
-
-	var result []*pb.Collection
-	for _, c := range collections {
-		result = append(result, collectionToProto(c))
-	}
-
-	return &pb.ListCollectionsResponse{
-		Data:       result,
-		Pagination: paginationToProto(pagination),
-	}, nil
-}
-
-// CreateCollection ???
-func (s *grpcServer) CreateCollection(
-	ctx context.Context,
-	req *pb.CreateCollectionRequest,
-) (*pb.GetCollectionResponse, error) {
-	id := uuid.NewString()
-
-	protoCollection := &pb.Collection{
-		Id:   id,
-		Name: req.Collection.GetName(),
-	}
-
-	_, err := s.store.CreateCollection(protoToCollection(protoCollection))
-	if err != nil {
-		if errors.Is(err, storage.ErrCollectionAlreadyExists) {
-			return nil, status.Errorf(codes.AlreadyExists, "Collection %q already exists", id)
-		}
-		return nil, status.Errorf(codes.Internal, "CreateCollection %q failed: %v", id, err)
-	}
-
-	return &pb.GetCollectionResponse{
-		Data: protoCollection,
-	}, nil
-}
-
-// GetCollection ???
-func (s *grpcServer) GetCollection(
-	ctx context.Context,
-	req *pb.CollectionId,
-) (*pb.GetCollectionResponse, error) {
-	id := req.GetId()
-
-	collection, err := s.store.GetCollection(id)
-	if err != nil {
-		if errors.Is(err, storage.ErrCollectionNotFound) {
-			return nil, status.Errorf(codes.NotFound, "Collection %q not found", id)
-		}
-		return nil, status.Errorf(codes.Internal, "GetCollection %q failed: %v", id, err)
-	}
-
-	itemCount := s.store.GetItemCountByCollection(id)
-
-	return &pb.GetCollectionResponse{
-		Data: &pb.Collection{
-			Id:        collection.ID,
-			Name:      collection.Name,
-			ItemCount: int32(itemCount),
-		},
-	}, nil
-}
-
-// UpdateCollection ???
-func (s *grpcServer) UpdateCollection(
-	ctx context.Context,
-	req *pb.UpdateCollectionRequest,
-) (*pb.GetCollectionResponse, error) {
-	id := req.GetId()
-
-	collection, err := s.store.UpdateCollection(id, protoToCollection(req.GetCollection()))
-	if err != nil {
-		if errors.Is(err, storage.ErrCollectionNotFound) {
-			return nil, status.Errorf(codes.NotFound, "Collection %q not found", id)
-		}
-		return nil, status.Errorf(codes.Internal, "UpdateCollection %q failed: %v", id, err)
-	}
-
-	return &pb.GetCollectionResponse{
-		Data: collectionToProto(collection),
-	}, nil
-}
-
-// DeleteCollection ???
-func (s *grpcServer) DeleteCollection(
-	ctx context.Context,
-	req *pb.CollectionId,
-) (*emptypb.Empty, error) {
-	id := req.GetId()
-
-	err := s.store.DeleteCollection(id)
-	if err != nil {
-		if errors.Is(err, storage.ErrCollectionNotFound) {
-			return nil, status.Errorf(codes.NotFound, "Collection %q not found", id)
-		}
-		return nil, status.Errorf(codes.Internal, "DeleteCollection %q failed: %v", id, err)
-	}
-
-	return nil, nil
-}
-
 // ------- Item Methods -------
 
 // ListItems ???
-func (s *grpcServer) ListItems(
+func (s *CollectionService) ListItems(
 	ctx context.Context,
 	req *pb.ListItemsRequest,
 ) (*pb.ListItemsResponse, error) {
@@ -177,11 +44,11 @@ func (s *grpcServer) ListItems(
 }
 
 // CreateItem ???
-func (s *grpcServer) CreateItem(
+func (s *CollectionService) CreateItem(
 	ctx context.Context,
 	req *pb.CreateItemRequest,
 ) (*pb.GetItemResponse, error) {
-	id := uuid.NewString()
+	id := s.utils.NewId()
 	collectionId := req.GetCollectionId()
 
 	// Create the actual item
@@ -206,7 +73,7 @@ func (s *grpcServer) CreateItem(
 }
 
 // CreateItem ???
-func (s *grpcServer) CreateItems(
+func (s *CollectionService) CreateItems(
 	ctx context.Context,
 	req *pb.CreateItemsRequest,
 ) (*pb.ListItemsResponse, error) {
@@ -215,7 +82,7 @@ func (s *grpcServer) CreateItems(
 	var itemsToCreate []entities.Item
 	for _, reqItem := range req.GetItems() {
 		item := entities.Item{
-			Id:           uuid.NewString(),
+			Id:           s.utils.NewId(),
 			Name:         reqItem.GetName(),
 			CollectionId: collectionId,
 		}
@@ -242,7 +109,7 @@ func (s *grpcServer) CreateItems(
 }
 
 // GetItem ???
-func (s *grpcServer) GetItem(
+func (s *CollectionService) GetItem(
 	ctx context.Context,
 	req *pb.CollectionItemId,
 ) (*pb.GetItemResponse, error) {
@@ -266,7 +133,7 @@ func (s *grpcServer) GetItem(
 }
 
 // UpdateItem ???
-func (s *grpcServer) UpdateItem(
+func (s *CollectionService) UpdateItem(
 	ctx context.Context,
 	req *pb.UpdateItemRequest,
 ) (*pb.GetItemResponse, error) {
@@ -290,10 +157,10 @@ func (s *grpcServer) UpdateItem(
 }
 
 // DeleteItem ???
-func (s *grpcServer) DeleteItem(
+func (s *CollectionService) DeleteItem(
 	ctx context.Context,
 	req *pb.CollectionItemId,
-) (*pb.GetItemResponse, error) {
+) (*emptypb.Empty, error) {
 	id := req.GetId()
 	collectionId := req.GetCollectionId()
 
