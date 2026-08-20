@@ -31,6 +31,8 @@ func main() {
 	bootLog.Sync() // flush bootLog upon successful set up of main logger
 	defer logger.Sync()
 
+	logger.Info("Collection Application Starting...")
+
 	// Set if Gin is Prod or not?
 	// THIS ONLY NEEDS TO BE SET IF GIN IS ACTUALLY EVEN BEING RUN
 	if cfg.Environment == config.PRODUCTION {
@@ -42,34 +44,34 @@ func main() {
 		logger.Fatalf("Failed to initialise %q type Store: %v\n", cfg.Store, err)
 	}
 
-	// Instantiate collection service
-	collectionServiceType := collection.GRPC
-	// Implementations should be config / environment driven
-	collectionService, err := collection.CollectionServiceFactory(collectionServiceType, logger, store)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to initialise %q type Collection Service: %v\n", storeType, err)
-		os.Exit(1)
-	}
+	collectionService := collection.NewService(logger, store)
 
-	// Establish Context & Err Group
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
+	// servers is the configured set of servers you want to run.
+	// THIS SHOULD BE DRIVEN BY CONFIG!
+	servers := []server.Server{
+		server.NewGrpcServer(logger, "localhost:50100", collectionService),
+		server.NewGinServer(logger, ":8089", collectionService),
+	}
+
+	// Start servers in err group
 	g, ctx := errgroup.WithContext(ctx)
-
-	// Start Servers inside go routines
-	// If a server is started should be driven from config!!
-	g.Go(func() error {
-		return server.StartGrpcServer(ctx, logger, store, collectionService)
-	})
-
-	g.Go(func() error {
-		return server.StartHTTPServer(ctx, logger, store, collectionService)
-	})
+	for _, s := range servers {
+		s := s // capture (unnecessary on Go 1.22+)
+		g.Go(func() error {
+			// Checking for errors here allows us to wrap the error with more context!
+			if err := s.Start(ctx); err != nil {
+				return fmt.Errorf("%s server: %w", s.Name(), err)
+			}
+			return nil
+		})
+	}
 
 	if err := g.Wait(); err != nil {
 		logger.Errorf("Application exiting due to error: %v", err)
 	}
 
-	logger.Info("Exiting Collection Application")
+	logger.Info("Collection Application Exiting...")
 }
