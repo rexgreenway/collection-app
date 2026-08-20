@@ -40,5 +40,5 @@ type Store interface {
 	DeleteItem(collectionId string, itemId string) error
 
 	// ????
-	GetItemCountByCollection(collectionID string) int32
+	GetItemCountByCollection(collectionId string) int32
 }

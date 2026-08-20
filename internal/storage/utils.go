@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	// DefaultPage is the default page to return if none is specified
+	// DefaultPage is the default page to return if none is specified.
 	DefaultPage = int32(1)
-	// DefaultPageSize is the default page size to return if none is specified
+	// DefaultPageSize is the default page size to return if none is specified.
 	DefaultPageSize = int32(10)
 )
 

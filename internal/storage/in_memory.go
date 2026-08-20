@@ -6,7 +6,6 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/bytedance/gopkg/util/logger"
 	"github.com/rexgreenway/collection-app/internal/entities"
 )
 
@@ -23,9 +22,11 @@ type inMemoryStorage struct {
 // NewInMemoryStorage ???
 func newInMemoryStorage(logger *zap.SugaredLogger) (*inMemoryStorage, error) {
 	return &inMemoryStorage{
-		collections:     map[string]entities.Collection{},
+		logger: logger,
+
+		collections: map[string]entities.Collection{},
+
 		collectionItems: map[string]map[string]entities.Item{},
-		logger:          logger,
 	}, nil
 }
 
@@ -35,6 +36,8 @@ func newInMemoryStorage(logger *zap.SugaredLogger) (*inMemoryStorage, error) {
 func (s inMemoryStorage) ListCollections(pagination *entities.Pagination) ([]entities.Collection, error) {
 	total := int32(len(s.collections))
 
+	// Is there a way of moving this outside of the implementation
+	// Or as suggested in the function comments have implementation specific versions.
 	validateTransformPagination(pagination, total)
 
 	result := slices.Collect(maps.Values(s.collections))[pagination.Start:pagination.End]
@@ -135,7 +138,7 @@ func (s *inMemoryStorage) CreateItemBatchByCollectionId(
 
 	for _, item := range items {
 		if _, ok := collectionItems[item.Id]; ok {
-			logger.Warnf("Item %q already exists, skipping creation.", item.Id)
+			s.logger.Warnf("Item %q already exists, skipping creation.", item.Id)
 		} else {
 			collectionItems[item.Id] = item
 		}
@@ -205,8 +208,8 @@ func (s *inMemoryStorage) DeleteItem(
 }
 
 // GetItemCountByCollection ???
-func (s *inMemoryStorage) GetItemCountByCollection(collectionID string) int32 {
-	if items, ok := s.items[collectionID]; !ok {
+func (s *inMemoryStorage) GetItemCountByCollection(collectionId string) int32 {
+	if items, ok := s.collectionItems[collectionId]; !ok {
 		return 0
 	} else {
 		return int32(len(items))

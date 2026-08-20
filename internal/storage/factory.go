@@ -19,6 +19,6 @@ func StorageFactory(impl StorageType, logger *zap.SugaredLogger) (Store, error) 
 	// 	return newOSStorage()
 
 	default:
-		return nil, fmt.Errorf("Storage implementation does not exist %q", impl)
+		return nil, fmt.Errorf("Storage implementation %q is not supported", impl)
 	}
 }
