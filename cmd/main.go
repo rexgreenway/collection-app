@@ -8,38 +8,38 @@ import (
 	"syscall"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rexgreenway/collection-app/internal/config"
 	"github.com/rexgreenway/collection-app/internal/logger"
 	"github.com/rexgreenway/collection-app/internal/server"
 	"github.com/rexgreenway/collection-app/internal/services/collection"
 	"github.com/rexgreenway/collection-app/internal/storage"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
 func main() {
-	environment := os.Getenv("ENVIRONMENT")
+	// bootLog is an ephemeral logger used during application configuration &
+	//  startup before the main logger is configured.
+	bootLog := zap.Must(zap.NewDevelopment()).Sugar()
 
-	logger, err := logger.FromConfig(&logger.Config{Environment: environment})
+	cfg := config.FromEnv(bootLog)
+
+	logger, err := logger.FromConfig(&cfg)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to initialise logger: %v\n", err)
-		os.Exit(1)
+		bootLog.Fatalf("Failed to initialise logger: %v\n", err)
 	}
-	defer logger.Sync() // now runs when main() exits — flushes any buffered log entries
+	bootLog.Sync() // flush bootLog upon successful set up of main logger
+	defer logger.Sync()
 
-	logger.Info("Starting Collection Application")
-
-	logger.Info("Setting Up Environment")
 	// Set if Gin is Prod or not?
-	if environment == "prod" {
+	// THIS ONLY NEEDS TO BE SET IF GIN IS ACTUALLY EVEN BEING RUN
+	if cfg.Environment == config.PRODUCTION {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	// Set up persistent Store
-	// Read this from a env var at some point
-	storeType := storage.IN_MEMORY
-	store, err := storage.StorageFactory(storeType, logger)
+	store, err := storage.StorageFactory(cfg.Store, logger)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to initialise %q type Store: %v\n", storeType, err)
-		os.Exit(1)
+		logger.Fatalf("Failed to initialise %q type Store: %v\n", cfg.Store, err)
 	}
 
 	// Instantiate collection service

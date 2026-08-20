@@ -6,7 +6,3 @@ type Item struct {
 
 	CollectionId string `json:"collection_id"`
 }
-
-// IDEAS:
-// - ItemType to indicate a specific schema for an item (film, comic, book, etc.)
-// - Info/Extra field to hold metadata
