@@ -1,4 +1,4 @@
-package collection_test
+package collection
 
 import (
 	"context"
@@ -12,11 +12,10 @@ import (
 	"google.golang.org/grpc/status"
 
 	pb "github.com/rexgreenway/collection-app/internal/gen/v1/collection"
-	"github.com/rexgreenway/collection-app/internal/services/collection"
 	"github.com/rexgreenway/collection-app/internal/storage"
 )
 
-func newTestService(t *testing.T, opts ...collection.Option) *collection.CollectionService {
+func newTestService(t *testing.T, opts ...Option) *CollectionService {
 	t.Helper()
 
 	logger := zap.NewNop().Sugar()
@@ -26,7 +25,7 @@ func newTestService(t *testing.T, opts ...collection.Option) *collection.Collect
 		t.Fatalf("failed to create store: %v", err)
 	}
 
-	return collection.NewService(logger, store, opts...)
+	return NewService(logger, store, opts...)
 }
 
 func TestListCollections(t *testing.T) {
@@ -38,9 +37,11 @@ func TestListCollections(t *testing.T) {
 		resp, err := svc.ListCollections(ctx, &pb.ListCollectionsRequest{})
 
 		require.NoError(t, err)
+
 		assert.Empty(t, resp.Data)
+
 		assert.EqualValues(t, 1, resp.Pagination.Page)
-		assert.EqualValues(t, 0, resp.Pagination.PageSize)
+		assert.EqualValues(t, 10, resp.Pagination.PageSize)
 	})
 
 	t.Run("lists all created collections", func(t *testing.T) {
@@ -93,9 +94,6 @@ func TestListCollections(t *testing.T) {
 		require.NoError(t, err)
 		assert.Len(t, page2.Data, 3)
 
-		fmt.Println("PAGE 1: ", page1.Data)
-		fmt.Println("PAGE 2: ", page2.Data)
-
 		// Assert that the two pages do not overlap
 		assert.NotSubset(t, page1.Data, page2.Data)
 		assert.NotSubset(t, page2.Data, page1.Data)
@@ -132,7 +130,7 @@ func TestCreateCollections(t *testing.T) {
 		// Create a test service where same id is always generated.
 		svc := newTestService(
 			t,
-			collection.WithNewIdFunc(func() string { return "same-test-id" }),
+			WithNewIdFunc(func() string { return "same-test-id" }),
 		)
 
 		// First call succeeds.
