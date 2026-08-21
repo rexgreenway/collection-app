@@ -8,8 +8,8 @@ import (
 )
 
 func TestInMemoryStorage(t *testing.T) {
-	newStore := func(t *testing.T) Store {
-		store, err := newInMemoryStorage(zap.NewNop().Sugar())
+	newStore := func(t *testing.T, opts ...Option) Store {
+		store, err := StorageFactory(IN_MEMORY, zap.NewNop().Sugar(), opts...)
 		require.NoError(t, err)
 		return store
 	}

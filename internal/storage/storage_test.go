@@ -2,6 +2,7 @@ package storage
 
 import (
 	"testing"
+	"time"
 
 	"github.com/rexgreenway/collection-app/internal/entities"
 	"github.com/stretchr/testify/assert"
@@ -10,21 +11,44 @@ import (
 
 func runCollectionCRUDTests(
 	t *testing.T,
-	newStore func(t *testing.T) Store,
+	newStore func(t *testing.T, opts ...Option) Store,
 ) {
-	// sharedTestStore is shared across tests that do not require an empty
-	// store to assert correct returns.
+	testNow := time.Now().UTC()
+	testNowUTCFunc := func() time.Time { return testNow }
+
+	// newTestStore returns a store with the above defined predicable utility
+	// functions for testing.
+	newTestStore := func() Store {
+		return newStore(
+			t,
+			WithNowUTCFunc(testNowUTCFunc),
+		)
+	}
+
+	// sharedTestStore is single shared store for use in tests that do not
+	// require an empty store to assert correct returns.
 	sharedTestStore := newStore(t)
 
 	// CREATE
 
-	t.Run("create succeeds", func(t *testing.T) {
-		col := entities.Collection{Id: "create-test-id", Name: "Test"}
+	t.Run("create & populate metadata succeeds", func(t *testing.T) {
+		store := newTestStore()
 
-		created, err := sharedTestStore.CreateCollection(col)
+		col := entities.Collection{Id: "create-test-id", Name: "Test"}
+		created, err := store.CreateCollection(col)
 
 		require.NoError(t, err)
-		assert.Equal(t, col, created)
+		assert.Equal(
+			t,
+			entities.Collection{
+				Id:   col.Id,
+				Name: col.Name,
+				Metadata: entities.Metadata{
+					CreatedAt: testNow,
+				},
+			},
+			created,
+		)
 	})
 
 	t.Run("create duplicate fails", func(t *testing.T) {
@@ -111,16 +135,28 @@ func runCollectionCRUDTests(
 	// FETCH
 
 	t.Run("fetching a new collection succeeds", func(t *testing.T) {
+		store := newTestStore()
+
 		colId := "collection-test-id"
 		col := entities.Collection{Id: colId, Name: "Test"}
 
-		_, err := sharedTestStore.CreateCollection(col)
+		_, err := store.CreateCollection(col)
 		require.NoError(t, err)
 
-		fetched, err := sharedTestStore.GetCollection(colId)
+		fetched, err := store.GetCollection(colId)
 
 		require.NoError(t, err)
-		require.Equal(t, col, fetched)
+		assert.Equal(
+			t,
+			entities.Collection{
+				Id:   col.Id,
+				Name: col.Name,
+				Metadata: entities.Metadata{
+					CreatedAt: testNow,
+				},
+			},
+			fetched,
+		)
 	})
 
 	t.Run("fetching a non-existent collection fails", func(t *testing.T) {
@@ -132,28 +168,33 @@ func runCollectionCRUDTests(
 	// UPDATE
 
 	t.Run("updating a collection succeeds", func(t *testing.T) {
+		store := newTestStore()
+
 		colId := "update-test-id"
 		col := entities.Collection{Id: colId, Name: "First Name"}
 
-		_, err := sharedTestStore.CreateCollection(col)
+		_, err := store.CreateCollection(col)
 		require.NoError(t, err)
 
 		updatedName := "New Name"
 
-		_, err = sharedTestStore.UpdateCollection(
+		_, err = store.UpdateCollection(
 			colId,
 			entities.CollectionUpdate{Name: &updatedName},
 		)
 		require.NoError(t, err)
 
-		updated, err := sharedTestStore.GetCollection(colId)
+		updated, err := store.GetCollection(colId)
 
 		require.NoError(t, err)
-		require.Equal(
+		assert.Equal(
 			t,
 			entities.Collection{
-				Id:   colId,
+				Id:   col.Id,
 				Name: updatedName,
+				Metadata: entities.Metadata{
+					CreatedAt: testNow,
+				},
 			},
 			updated,
 		)

@@ -3,6 +3,7 @@ package storage
 import (
 	"maps"
 	"slices"
+	"sort"
 
 	"go.uber.org/zap"
 
@@ -13,21 +14,32 @@ const IN_MEMORY StorageType = "in_memory"
 
 // inMemoryStorage ???
 type inMemoryStorage struct {
+	logger *zap.SugaredLogger
+
+	utils Utils
+
 	collections     map[string]entities.Collection
 	collectionItems map[string]map[string]entities.Item
-
-	logger *zap.SugaredLogger
 }
 
-// NewInMemoryStorage ???
-func newInMemoryStorage(logger *zap.SugaredLogger) (*inMemoryStorage, error) {
+// newInMemoryStorage ???
+func newInMemoryStorage(logger *zap.SugaredLogger, utils Utils) (*inMemoryStorage, error) {
 	return &inMemoryStorage{
 		logger: logger,
+
+		utils: utils,
 
 		collections: map[string]entities.Collection{},
 
 		collectionItems: map[string]map[string]entities.Item{},
 	}, nil
+}
+
+// ------- Store Utils -------
+
+// stampCreatedAt sets the CreatedAt Metadata for a collection.
+func (s inMemoryStorage) stampCreatedAt(collection *entities.Collection) {
+	collection.Metadata.CreatedAt = s.utils.NowUTC()
 }
 
 // ------- Collection Storage Methods -------
@@ -38,9 +50,14 @@ func (s inMemoryStorage) ListCollections(pagination *entities.Pagination) ([]ent
 
 	paginationBounds := resolvePaginationBounds(pagination, total)
 
-	result := slices.Collect(maps.Values(s.collections))[paginationBounds.Start:paginationBounds.End]
+	collections := slices.Collect(maps.Values(s.collections))
 
-	return result, nil
+	// Sort Collections by CreatedAt in descending order (newest first)
+	sort.Slice(collections, func(i, j int) bool {
+		return collections[i].Metadata.CreatedAt.After(collections[j].Metadata.CreatedAt)
+	})
+
+	return collections[paginationBounds.Start:paginationBounds.End], nil
 }
 
 // CreateCollection ???
@@ -48,7 +65,11 @@ func (s inMemoryStorage) CreateCollection(collection entities.Collection) (entit
 	if _, ok := s.collections[collection.Id]; ok {
 		return entities.Collection{}, ErrCollectionAlreadyExists
 	}
+
+	s.stampCreatedAt(&collection)
+
 	s.collections[collection.Id] = collection
+
 	return collection, nil
 }
 

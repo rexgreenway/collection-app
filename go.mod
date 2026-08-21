@@ -3,7 +3,6 @@ module github.com/rexgreenway/collection-app
 go 1.25.3
 
 require (
-	github.com/bytedance/gopkg v0.1.3
 	github.com/gin-contrib/zap v1.1.7
 	github.com/gin-gonic/gin v1.12.0
 	github.com/google/uuid v1.6.0
@@ -17,6 +16,7 @@ require (
 )
 
 require (
+	github.com/bytedance/gopkg v0.1.3 // indirect
 	github.com/bytedance/sonic v1.15.0 // indirect
 	github.com/bytedance/sonic/loader v0.5.0 // indirect
 	github.com/cloudwego/base64x v0.1.6 // indirect
