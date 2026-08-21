@@ -16,7 +16,7 @@ type Store interface {
 	GetCollection(collectionId string) (entities.Collection, error)
 
 	// UpdateCollection ???
-	UpdateCollection(collectionId string, collection entities.Collection) (entities.Collection, error)
+	UpdateCollection(id string, update entities.CollectionUpdate) (entities.Collection, error)
 
 	// DeleteCollection ???
 	DeleteCollection(collectionId string) error

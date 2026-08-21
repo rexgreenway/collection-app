@@ -65,12 +65,15 @@ func (s inMemoryStorage) GetCollection(collectionId string) (entities.Collection
 }
 
 // UpdateCollection ??? (Change this to a diff method??)
-func (s *inMemoryStorage) UpdateCollection(id string, collection entities.Collection) (entities.Collection, error) {
-	if _, ok := s.collections[id]; !ok {
+func (s *inMemoryStorage) UpdateCollection(id string, update entities.CollectionUpdate) (entities.Collection, error) {
+	collection, ok := s.collections[id]
+	if !ok {
 		return entities.Collection{}, ErrCollectionNotFound
 	}
 
-	s.collections[collection.Id] = collection
+	collection.Update(update)
+
+	s.collections[id] = collection
 
 	return collection, nil
 }

@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
+	"github.com/rexgreenway/collection-app/internal/entities"
 	pb "github.com/rexgreenway/collection-app/internal/gen/v1/collection"
 	"github.com/rexgreenway/collection-app/internal/storage"
 )
@@ -95,7 +96,12 @@ func (s *CollectionService) UpdateCollection(
 ) (*pb.GetCollectionResponse, error) {
 	id := req.GetId()
 
-	collection, err := s.store.UpdateCollection(id, protoToCollection(req.GetCollection()))
+	collection, err := s.store.UpdateCollection(
+		id,
+		entities.CollectionUpdate{
+			Name: &req.GetCollection().Name,
+		},
+	)
 	if err != nil {
 		if errors.Is(err, storage.ErrCollectionNotFound) {
 			return nil, status.Errorf(codes.NotFound, "Collection %q not found", id)
