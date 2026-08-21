@@ -13,26 +13,41 @@ const (
 	DefaultPageSize = int32(10)
 )
 
-// validateTransformPagination ???
-func validateTransformPagination(pagination *entities.Pagination, total int32) {
+// applyPaginationDefaults populates default Page and PageSize if pagination or
+// pagination values are nil or are invalid (i.e. negative values).
+func applyPaginationDefaults(pagination *entities.Pagination) *entities.Pagination {
+	if pagination == nil {
+		pagination = &entities.Pagination{}
+	}
+
+	if pagination.Page <= 0 {
+		pagination.Page = DefaultPage
+	}
+	if pagination.PageSize <= 0 {
+		pagination.PageSize = DefaultPageSize
+	}
+
+	return pagination
+}
+
+// resolvePaginationBounds ???
+func resolvePaginationBounds(pagination *entities.Pagination, total int32) entities.PaginationBounds {
+	pagination = applyPaginationDefaults(pagination)
+
+	var maxPage float64
 	if total == 0 {
-		pagination.Page = int32(1)
+		maxPage = 1
 	} else {
-		// Transform to defaults in the storage package as related to interaction with store specifically
-		// In the future could move this to be something each implementation enacts itself, with limits/maxes etc.
-		// As various Storage tools might have different requirements (i.e. DataStore 30???)
-		if pagination.Page == 0 {
-			pagination.Page = DefaultPage
-		}
-		if pagination.PageSize == 0 {
-			pagination.PageSize = DefaultPageSize
-		}
+		maxPage = math.Ceil(float64(total) / float64(pagination.PageSize))
+	}
 
-		// Find max page
-		max_page := math.Ceil(float64(total) / float64(pagination.PageSize))
-		pagination.Page = int32(math.Min(float64(pagination.Page), max_page))
+	pagination.Page = int32(math.Min(float64(pagination.Page), maxPage))
 
-		pagination.Start = pagination.PageSize * (pagination.Page - 1)
-		pagination.End = int32(math.Min(float64(pagination.PageSize*pagination.Page), float64(total)))
+	start := pagination.PageSize * (pagination.Page - 1)
+	end := int32(math.Min(float64(pagination.PageSize*pagination.Page), float64(total)))
+
+	return entities.PaginationBounds{
+		Start: start,
+		End:   end,
 	}
 }

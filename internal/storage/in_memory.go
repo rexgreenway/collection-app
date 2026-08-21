@@ -36,11 +36,9 @@ func newInMemoryStorage(logger *zap.SugaredLogger) (*inMemoryStorage, error) {
 func (s inMemoryStorage) ListCollections(pagination *entities.Pagination) ([]entities.Collection, error) {
 	total := int32(len(s.collections))
 
-	// Is there a way of moving this outside of the implementation
-	// Or as suggested in the function comments have implementation specific versions.
-	validateTransformPagination(pagination, total)
+	paginationBounds := resolvePaginationBounds(pagination, total)
 
-	result := slices.Collect(maps.Values(s.collections))[pagination.Start:pagination.End]
+	result := slices.Collect(maps.Values(s.collections))[paginationBounds.Start:paginationBounds.End]
 
 	return result, nil
 }
@@ -104,9 +102,9 @@ func (s *inMemoryStorage) ListItemsByCollectionId(
 
 	total := int32(len(items))
 
-	validateTransformPagination(pagination, total)
+	paginationBounds := resolvePaginationBounds(pagination, total)
 
-	result := slices.Collect(maps.Values(items))[pagination.Start:pagination.End]
+	result := slices.Collect(maps.Values(items))[paginationBounds.Start:paginationBounds.End]
 
 	return result, nil
 }
