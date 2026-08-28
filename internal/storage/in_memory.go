@@ -18,8 +18,8 @@ type inMemoryStorage struct {
 
 	utils Utils
 
-	collections     map[string]entities.Collection
-	collectionItems map[string]map[string]entities.Item
+	collections map[string]entities.Collection
+	items       map[string]entities.Item
 }
 
 // newInMemoryStorage ???
@@ -31,15 +31,8 @@ func newInMemoryStorage(logger *zap.SugaredLogger, utils Utils) (*inMemoryStorag
 
 		collections: map[string]entities.Collection{},
 
-		collectionItems: map[string]map[string]entities.Item{},
+		items: map[string]entities.Item{},
 	}, nil
-}
-
-// ------- Store Utils -------
-
-// stampCreatedAt sets the CreatedAt Metadata for a collection.
-func (s inMemoryStorage) stampCreatedAt(collection *entities.Collection) {
-	collection.Metadata.CreatedAt = s.utils.NowUTC()
 }
 
 // ------- Collection Storage Methods -------
@@ -52,9 +45,14 @@ func (s inMemoryStorage) ListCollections(pagination *entities.Pagination) ([]ent
 
 	collections := slices.Collect(maps.Values(s.collections))
 
-	// Sort Collections by CreatedAt in descending order (newest first)
+	// Sort Collections by CreatedAt in descending order (newest first, tie breaking using id)
+	// Could turn this sorting into a util that can be uniformly used across stores / resources with equivalent metadata
 	sort.Slice(collections, func(i, j int) bool {
-		return collections[i].Metadata.CreatedAt.After(collections[j].Metadata.CreatedAt)
+		a, b := collections[i], collections[j]
+		if a.Metadata.CreatedAt.Equal(b.Metadata.CreatedAt) {
+			return a.Id < b.Id
+		}
+		return a.Metadata.CreatedAt.After(b.Metadata.CreatedAt)
 	})
 
 	return collections[paginationBounds.Start:paginationBounds.End], nil
@@ -66,7 +64,7 @@ func (s inMemoryStorage) CreateCollection(collection entities.Collection) (entit
 		return entities.Collection{}, ErrCollectionAlreadyExists
 	}
 
-	s.stampCreatedAt(&collection)
+	collection.StampCreatedAt(s.utils.NowUTC())
 
 	s.collections[collection.Id] = collection
 
@@ -110,59 +108,27 @@ func (s *inMemoryStorage) DeleteCollection(collectionId string) error {
 
 // ------- Item Storage Methods -------
 
-// ListItemsByCollectionId ???
-func (s *inMemoryStorage) ListItemsByCollectionId(
-	collectionId string,
-	pagination *entities.Pagination,
-) ([]entities.Item, error) {
-	if _, ok := s.collections[collectionId]; !ok {
-		return []entities.Item{}, ErrCollectionNotFound
-	}
-
-	items := s.collectionItems[collectionId]
-
-	total := int32(len(items))
-
-	paginationBounds := resolvePaginationBounds(pagination, total)
-
-	result := slices.Collect(maps.Values(items))[paginationBounds.Start:paginationBounds.End]
-
-	return result, nil
-}
-
 // CreateItem ???
 func (s *inMemoryStorage) CreateItem(item entities.Item) (entities.Item, error) {
-	// Check collection exists
-	collectionItems, ok := s.collectionItems[item.CollectionId]
-	if !ok {
-		return entities.Item{}, ErrCollectionNotFound
-	}
-
-	if _, ok := collectionItems[item.Id]; ok {
+	if _, ok := s.items[item.Id]; ok {
 		return entities.Item{}, ErrItemAlreadyExists
 	}
-	collectionItems[item.Id] = item
+
+	item.StampCreatedAt(s.utils.NowUTC())
+
+	s.items[item.Id] = item
 
 	return item, nil
 }
 
-// CreateItemBatchByCollectionId ???
-func (s *inMemoryStorage) CreateItemBatchByCollectionId(
-	collectionId string,
-	items []entities.Item,
-) ([]entities.Item, error) {
-	// Check collection exists
-	if _, ok := s.collections[collectionId]; !ok {
-		return []entities.Item{}, ErrCollectionNotFound
-	}
-
-	collectionItems := s.collectionItems[collectionId]
-
+// CreateItemBatchByCollectionId ??? -- Does this method need a upper limit ???
+func (s *inMemoryStorage) CreateItemBatch(items []entities.Item) ([]entities.Item, error) {
 	for _, item := range items {
-		if _, ok := collectionItems[item.Id]; ok {
+		if _, ok := s.items[item.Id]; ok {
 			s.logger.Warnf("Item %q already exists, skipping creation.", item.Id)
 		} else {
-			collectionItems[item.Id] = item
+			item.StampCreatedAt(s.utils.NowUTC())
+			s.items[item.Id] = item
 		}
 	}
 
@@ -170,17 +136,8 @@ func (s *inMemoryStorage) CreateItemBatchByCollectionId(
 }
 
 // GetItem ???
-func (s *inMemoryStorage) GetItem(
-	collectionId string,
-	itemId string,
-) (entities.Item, error) {
-	// Check collection exists
-	collectionItems, ok := s.collectionItems[collectionId]
-	if !ok {
-		return entities.Item{}, ErrCollectionNotFound
-	}
-
-	item, ok := collectionItems[itemId]
+func (s *inMemoryStorage) GetItem(itemId string) (entities.Item, error) {
+	item, ok := s.items[itemId]
 	if !ok {
 		return entities.Item{}, ErrItemNotFound
 	}
@@ -188,52 +145,66 @@ func (s *inMemoryStorage) GetItem(
 	return item, nil
 }
 
-func (s *inMemoryStorage) UpdateItem(
-	collectionId string,
-	itemId string,
-	item entities.Item,
-) (entities.Item, error) {
-	// Check collection exists
-	collectionItems, ok := s.collectionItems[collectionId]
+func (s *inMemoryStorage) UpdateItem(itemId string, update entities.ItemUpdate) (entities.Item, error) {
+	item, ok := s.items[itemId]
 	if !ok {
-		return entities.Item{}, ErrCollectionNotFound
-	}
-
-	// Check item exists
-	if _, ok := collectionItems[itemId]; !ok {
 		return entities.Item{}, ErrItemNotFound
 	}
 
-	collectionItems[itemId] = item
+	item.Update(update)
+
+	s.items[itemId] = item
 
 	return item, nil
 }
 
 // DeleteItem ???
-func (s *inMemoryStorage) DeleteItem(
-	collectionId string,
-	itemId string,
-) error {
-	collectionItems, ok := s.collectionItems[collectionId]
-	if !ok {
-		return ErrCollectionNotFound
-	}
-
-	// Check item exists
-	if _, ok := collectionItems[itemId]; !ok {
+func (s *inMemoryStorage) DeleteItem(itemId string) error {
+	if _, ok := s.items[itemId]; !ok {
 		return ErrItemNotFound
 	}
 
-	delete(collectionItems, itemId)
+	delete(s.items, itemId)
 
 	return nil
 }
 
-// GetItemCountByCollection ???
-func (s *inMemoryStorage) GetItemCountByCollection(collectionId string) int32 {
-	if items, ok := s.collectionItems[collectionId]; !ok {
-		return 0
-	} else {
-		return int32(len(items))
+// ListItemsByCollectionId ???
+func (s *inMemoryStorage) ListItemsByCollectionId(
+	collectionId string,
+	pagination *entities.Pagination,
+) ([]entities.Item, error) {
+	var collectionItems []entities.Item
+	for _, item := range s.items {
+		if item.CollectionId == collectionId {
+			collectionItems = append(collectionItems, item)
+		}
 	}
+
+	total := int32(len(collectionItems))
+
+	paginationBounds := resolvePaginationBounds(pagination, total)
+
+	// Sort Items by CreatedAt in descending order (newest first, tie breaking using id)
+	sort.Slice(collectionItems, func(i, j int) bool {
+		a, b := collectionItems[i], collectionItems[j]
+		if a.Metadata.CreatedAt.Equal(b.Metadata.CreatedAt) {
+			return a.Id < b.Id
+		}
+		return a.Metadata.CreatedAt.After(b.Metadata.CreatedAt)
+	})
+
+	return collectionItems[paginationBounds.Start:paginationBounds.End], nil
+}
+
+// GetItemCountByCollection ???
+func (s *inMemoryStorage) GetItemCountByCollectionId(collectionId string) int32 {
+	var collectionItems []entities.Item
+	for _, item := range s.items {
+		if item.CollectionId == collectionId {
+			collectionItems = append(collectionItems, item)
+		}
+	}
+
+	return int32(len(collectionItems))
 }

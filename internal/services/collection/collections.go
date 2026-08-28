@@ -15,7 +15,7 @@ import (
 
 // ------- Collection Methods -------
 
-// ListCollections
+// ListCollections ???
 func (s *CollectionService) ListCollections(
 	ctx context.Context,
 	req *pb.ListCollectionsRequest,
