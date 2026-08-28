@@ -5,7 +5,7 @@ type Collection struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 
-	Metadata Metadata `json:"metadata"`
+	Metadata `json:"metadata"`
 }
 
 // CollectionUpdate holds the mutable fields of a Collection.

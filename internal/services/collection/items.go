@@ -90,7 +90,7 @@ func (s *CollectionService) CreateItems(
 		itemsToCreate = append(itemsToCreate, item)
 	}
 
-	items, err := s.store.CreateItemBatchByCollectionId(collectionId, itemsToCreate)
+	items, err := s.store.CreateItemBatch(itemsToCreate)
 	if err != nil {
 		if errors.Is(err, storage.ErrCollectionNotFound) {
 			return nil, status.Errorf(codes.NotFound, "Collection %q not found", collectionId)
@@ -116,7 +116,7 @@ func (s *CollectionService) GetItem(
 	id := req.GetId()
 	collectionId := req.GetCollectionId()
 
-	item, err := s.store.GetItem(collectionId, id)
+	item, err := s.store.GetItem(id)
 	if err != nil {
 		if errors.Is(err, storage.ErrCollectionNotFound) {
 			return nil, status.Errorf(codes.NotFound, "Collection %q not found", collectionId)
@@ -140,7 +140,12 @@ func (s *CollectionService) UpdateItem(
 	id := req.GetId()
 	collectionId := req.GetCollectionId()
 
-	item, err := s.store.UpdateItem(collectionId, id, protoToItem(req.GetItem()))
+	item := protoToItem(req.GetItem())
+
+	item, err := s.store.UpdateItem(id, entities.ItemUpdate{
+		Name:         &item.Name,
+		CollectionId: &item.CollectionId,
+	})
 	if err != nil {
 		if errors.Is(err, storage.ErrCollectionNotFound) {
 			return nil, status.Errorf(codes.NotFound, "Collection %q not found", collectionId)
@@ -164,10 +169,10 @@ func (s *CollectionService) DeleteItem(
 	id := req.GetId()
 	collectionId := req.GetCollectionId()
 
-	err := s.store.DeleteItem(collectionId, id)
+	err := s.store.DeleteItem(id)
 	if err != nil {
 		if errors.Is(err, storage.ErrCollectionNotFound) {
-			return nil, status.Errorf(codes.NotFound, "Collection %q not found", id)
+			return nil, status.Errorf(codes.NotFound, "Collection %q not found", collectionId)
 		}
 		if errors.Is(err, storage.ErrItemNotFound) {
 			return nil, status.Errorf(codes.NotFound, "Item %q not found", id)

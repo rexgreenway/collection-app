@@ -78,7 +78,7 @@ func (s *CollectionService) GetCollection(
 		return nil, status.Errorf(codes.Internal, "GetCollection %q failed: %v", id, err)
 	}
 
-	itemCount := s.store.GetItemCountByCollection(id)
+	itemCount := s.store.GetItemCountByCollectionId(id)
 
 	return &pb.GetCollectionResponse{
 		Data: &pb.Collection{
