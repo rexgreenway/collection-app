@@ -1,0 +1,9 @@
+template: testify
+dir: "{{.InterfaceDir}}/mocks"
+pkgname: "mocks"
+filename: "mock_{{.InterfaceName | snakecase}}.go"
+structname: "Mock{{.InterfaceName}}"
+packages:
+  github.com/rexgreenway/collection-app/internal/storage:
+    interfaces:
+      Store:
