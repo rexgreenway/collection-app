@@ -2,19 +2,24 @@ package collection
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/rexgreenway/collection-app/internal/entities"
 	pb "github.com/rexgreenway/collection-app/internal/gen/v1/collection"
 	"github.com/rexgreenway/collection-app/internal/storage"
+	"github.com/rexgreenway/collection-app/internal/storage/mocks"
 )
 
+// newTestService builds a service backed by an in-memory store.
 func newTestService(t *testing.T, opts ...Option) *CollectionService {
 	t.Helper()
 
@@ -28,6 +33,18 @@ func newTestService(t *testing.T, opts ...Option) *CollectionService {
 	return NewService(logger, store, opts...)
 }
 
+// newMockedService builds a service backed by a mocked store so tests can force
+// storage errors and verify how the service translates them.
+func newMockedService(t *testing.T, opts ...Option) (*CollectionService, *mocks.MockStore) {
+	t.Helper()
+
+	store := mocks.NewMockStore(t)
+
+	svc := NewService(zap.NewNop().Sugar(), store, opts...)
+
+	return svc, store
+}
+
 func TestListCollections(t *testing.T) {
 	ctx := context.Background()
 
@@ -37,6 +54,9 @@ func TestListCollections(t *testing.T) {
 		resp, err := svc.ListCollections(ctx, &pb.ListCollectionsRequest{})
 
 		require.NoError(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.OK, st.Code())
 
 		assert.Empty(t, resp.Data)
 
@@ -58,6 +78,10 @@ func TestListCollections(t *testing.T) {
 		resp, err := svc.ListCollections(ctx, &pb.ListCollectionsRequest{})
 
 		require.NoError(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.OK, st.Code())
+
 		assert.Len(t, resp.Data, 3)
 	})
 
@@ -92,6 +116,10 @@ func TestListCollections(t *testing.T) {
 		})
 
 		require.NoError(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.OK, st.Code())
+
 		assert.Len(t, page2.Data, 3)
 
 		// Assert that the two pages do not overlap
@@ -99,9 +127,22 @@ func TestListCollections(t *testing.T) {
 		assert.NotSubset(t, page2.Data, page1.Data)
 	})
 
-	// TESTs:
-	// - test pagination
-	// -
+	t.Run("list collections internal store failure", func(t *testing.T) {
+		svc, store := newMockedService(t)
+
+		// Force the dependency to fail.
+		store.EXPECT().
+			ListCollections(mock.AnythingOfType("*entities.Pagination")).
+			Return(nil, errors.New("boom"))
+
+		resp, err := svc.ListCollections(ctx, &pb.ListCollectionsRequest{})
+
+		require.Error(t, err)
+		assert.Nil(t, resp)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.Internal, st.Code())
+	})
 }
 
 func TestCreateCollections(t *testing.T) {
@@ -147,13 +188,121 @@ func TestCreateCollections(t *testing.T) {
 		assert.Equal(t, codes.AlreadyExists, st.Code())
 		assert.Contains(t, st.Message(), "already exists")
 	})
+
+	t.Run("create collection internal store failure", func(t *testing.T) {
+		svc, store := newMockedService(t)
+
+		// Force the dependency to fail.
+		store.EXPECT().
+			CreateCollection(mock.AnythingOfType("entities.Collection")).
+			Return(entities.Collection{}, errors.New("boom"))
+
+		resp, err := svc.CreateCollection(ctx, &pb.CreateCollectionRequest{})
+
+		require.Error(t, err)
+		assert.Nil(t, resp)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.Internal, st.Code())
+	})
 }
 
-// func TestListCollections(t *testing.T) {
-// 	svc := newTestService(t)
-// 	ctx := context.Background()
+func TestGetCollection(t *testing.T) {
+	ctx := context.Background()
 
-// 	t.Run("list when there is no collections", func(t *testing.T) {
-// 		// svc.ListCollections
-// 	})
-// }
+	t.Run("get collection doesn't exists", func(t *testing.T) {
+		svc, store := newMockedService(t)
+
+		// Return the sentinel error the service knows how to classify.
+		store.EXPECT().
+			GetCollection("missing-id").
+			Return(entities.Collection{}, storage.ErrCollectionNotFound)
+
+		resp, err := svc.GetCollection(ctx, &pb.CollectionId{Id: "missing-id"})
+
+		require.Error(t, err)
+		assert.Nil(t, resp)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.NotFound, st.Code())
+
+		// GetItemCountByCollection must not be reached once GetCollection fails.
+		store.AssertNotCalled(t, "GetItemCountByCollection", "missing-id")
+	})
+
+	t.Run("get collection internal store failure", func(t *testing.T) {
+		svc, store := newMockedService(t)
+
+		// Force the dependency to fail.
+		store.EXPECT().
+			GetCollection(mock.AnythingOfType("string")).
+			Return(entities.Collection{}, errors.New("boom"))
+
+		resp, err := svc.GetCollection(ctx, &pb.CollectionId{})
+
+		require.Error(t, err)
+		assert.Nil(t, resp)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.Internal, st.Code())
+	})
+}
+
+func TestUpdateCollection(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("update collection doesn't exists", func(t *testing.T) {
+		svc, store := newMockedService(t)
+
+		id := "missing-id"
+
+		// Return the sentinel error the service knows how to classify.
+		store.EXPECT().
+			UpdateCollection(id, mock.AnythingOfType("entities.CollectionUpdate")).
+			Return(entities.Collection{}, storage.ErrCollectionNotFound)
+
+		resp, err := svc.UpdateCollection(
+			ctx,
+			&pb.UpdateCollectionRequest{
+				Id: id,
+				Collection: &pb.Collection{
+					Name: "New Name",
+				},
+			},
+		)
+
+		require.Error(t, err)
+		assert.Nil(t, resp)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.NotFound, st.Code())
+
+		// GetItemCountByCollection must not be reached once GetCollection fails.
+		store.AssertNotCalled(t, "GetItemCountByCollection", "missing-id")
+	})
+
+	t.Run("update collection internal store failure", func(t *testing.T) {
+		svc, store := newMockedService(t)
+
+		// Force the dependency to fail.
+		store.EXPECT().
+			UpdateCollection(
+				mock.AnythingOfType("string"),
+				mock.AnythingOfType("entities.CollectionUpdate"),
+			).
+			Return(entities.Collection{}, errors.New("boom"))
+
+		resp, err := svc.UpdateCollection(
+			ctx,
+			&pb.UpdateCollectionRequest{
+				Collection: &pb.Collection{},
+			},
+		)
+
+		require.Error(t, err)
+		assert.Nil(t, resp)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.Internal, st.Code())
+	})
+}
