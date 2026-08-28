@@ -620,11 +620,68 @@ func runItemCRUDTests(
 	})
 }
 
-func runCollectionAndItemTests(
+func runCombinedTests(
 	t *testing.T,
 	newStore func(t *testing.T, opts ...Option) Store,
 ) {
-	t.Run("test getting item count by collection", func(t *testing.T) {})
+	t.Run("test getting item count by collection", func(t *testing.T) {
+		store := newStore(t)
 
-	t.Run("delete collection unmarks collectionId from child items", func(t *testing.T) {})
+		collectionId := "parent-col"
+
+		col := entities.Collection{Id: collectionId, Name: "Test Collection"}
+		_, err := store.CreateCollection(col)
+		require.NoError(t, err)
+
+		var items []entities.Item
+		for i := 0; i < 4; i++ {
+			items = append(
+				items,
+				entities.Item{
+					Id:           fmt.Sprintf("item-%v", i),
+					Name:         "Test Item",
+					CollectionId: collectionId,
+				},
+			)
+		}
+		_, err = store.CreateItemBatch(items)
+		require.NoError(t, err)
+
+		itemCount := store.GetItemCountByCollectionId(collectionId)
+
+		assert.EqualValues(t, 4, itemCount)
+	})
+
+	t.Run("delete collection unmarks collectionId from child items", func(t *testing.T) {
+		store := newStore(t)
+
+		collectionId := "parent-col"
+
+		col := entities.Collection{Id: collectionId, Name: "Test Collection"}
+		_, err := store.CreateCollection(col)
+		require.NoError(t, err)
+
+		var items []entities.Item
+		for i := 0; i < 4; i++ {
+			items = append(
+				items,
+				entities.Item{
+					Id:           fmt.Sprintf("item-%v", i),
+					Name:         "Test Item",
+					CollectionId: collectionId,
+				},
+			)
+		}
+		_, err = store.CreateItemBatch(items)
+		require.NoError(t, err)
+
+		err = store.DeleteCollection(collectionId)
+		require.NoError(t, err)
+
+		for i := 0; i < 4; i++ {
+			item, err := store.GetItem(fmt.Sprintf("item-%v", i))
+			require.NoError(t, err)
+			assert.Equal(t, entities.MISSING_COLLECTION_ID, item.CollectionId)
+		}
+	})
 }

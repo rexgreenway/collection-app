@@ -1,5 +1,7 @@
 package entities
 
+const MISSING_COLLECTION_ID = "missing-collection-id"
+
 // Item ???
 type Item struct {
 	Id   string `json:"id"`

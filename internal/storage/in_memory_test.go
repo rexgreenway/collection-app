@@ -18,4 +18,6 @@ func TestInMemoryStorage(t *testing.T) {
 
 	t.Run("Collections", func(t *testing.T) { runCollectionCRUDTests(t, newStore) })
 	t.Run("Items", func(t *testing.T) { runItemCRUDTests(t, newStore) })
+
+	t.Run("Combined", func(t *testing.T) { runCombinedTests(t, newStore) })
 }
