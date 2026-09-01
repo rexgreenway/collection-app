@@ -1,6 +1,11 @@
 package entities
 
-const MISSING_COLLECTION_ID = "missing-collection-id"
+// Item Defaults / Fallbacks
+const (
+	DEFAULT_ITEM_NAME = "New Item"
+
+	NO_COLLECTION_ID = "no-collection-id"
+)
 
 // Item ???
 type Item struct {

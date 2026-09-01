@@ -52,8 +52,9 @@ func protoToCollection(collection *pb.Collection) entities.Collection {
 // itemToProto
 func itemToProto(item entities.Item) *pb.Item {
 	return &pb.Item{
-		Id:   item.Id,
-		Name: item.Name,
+		Id:           item.Id,
+		Name:         item.Name,
+		CollectionId: item.CollectionId,
 	}
 }
 

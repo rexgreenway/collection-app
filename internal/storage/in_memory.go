@@ -106,7 +106,7 @@ func (s *inMemoryStorage) DeleteCollection(collectionId string) error {
 	// Remove the CollectionId from items.
 	for _, item := range s.items {
 		if item.CollectionId == collectionId {
-			item.CollectionId = entities.MISSING_COLLECTION_ID
+			item.CollectionId = entities.NO_COLLECTION_ID
 			s.items[item.Id] = item
 		}
 	}

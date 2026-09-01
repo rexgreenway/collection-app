@@ -681,7 +681,7 @@ func runCombinedTests(
 		for i := 0; i < 4; i++ {
 			item, err := store.GetItem(fmt.Sprintf("item-%v", i))
 			require.NoError(t, err)
-			assert.Equal(t, entities.MISSING_COLLECTION_ID, item.CollectionId)
+			assert.Equal(t, entities.NO_COLLECTION_ID, item.CollectionId)
 		}
 	})
 }
