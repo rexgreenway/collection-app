@@ -26,9 +26,6 @@ func (s *CollectionService) ListItems(
 
 	items, err := s.store.ListItemsByCollectionId(collectionId, &pagination)
 	if err != nil {
-		if errors.Is(err, storage.ErrCollectionNotFound) {
-			return nil, status.Errorf(codes.NotFound, "Collection %q not found", collectionId)
-		}
 		return nil, status.Errorf(codes.Internal, "ListItemsByCollectionId failed: %v", err)
 	}
 
@@ -58,9 +55,6 @@ func (s *CollectionService) CreateItem(
 		CollectionId: collectionId,
 	})
 	if err != nil {
-		if errors.Is(err, storage.ErrCollectionNotFound) {
-			return nil, status.Errorf(codes.NotFound, "Collection %q not found", collectionId)
-		}
 		if errors.Is(err, storage.ErrItemAlreadyExists) {
 			return nil, status.Errorf(codes.AlreadyExists, "Item %q already exists", id)
 		}
@@ -92,9 +86,6 @@ func (s *CollectionService) CreateItems(
 
 	items, err := s.store.CreateItemBatch(itemsToCreate)
 	if err != nil {
-		if errors.Is(err, storage.ErrCollectionNotFound) {
-			return nil, status.Errorf(codes.NotFound, "Collection %q not found", collectionId)
-		}
 		return nil, status.Errorf(codes.Internal, "CreateItemBatchByCollectionId %q failed: %v", collectionId, err)
 	}
 
@@ -118,9 +109,6 @@ func (s *CollectionService) GetItem(
 
 	item, err := s.store.GetItem(id)
 	if err != nil {
-		if errors.Is(err, storage.ErrCollectionNotFound) {
-			return nil, status.Errorf(codes.NotFound, "Collection %q not found", collectionId)
-		}
 		if errors.Is(err, storage.ErrItemNotFound) {
 			return nil, status.Errorf(codes.NotFound, "Item %q not found", id)
 		}
@@ -171,9 +159,6 @@ func (s *CollectionService) DeleteItem(
 
 	err := s.store.DeleteItem(id)
 	if err != nil {
-		if errors.Is(err, storage.ErrCollectionNotFound) {
-			return nil, status.Errorf(codes.NotFound, "Collection %q not found", collectionId)
-		}
 		if errors.Is(err, storage.ErrItemNotFound) {
 			return nil, status.Errorf(codes.NotFound, "Item %q not found", id)
 		}

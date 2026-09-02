@@ -182,6 +182,29 @@ func TestCreateCollections(t *testing.T) {
 func TestGetCollection(t *testing.T) {
 	ctx := context.Background()
 
+	t.Run("get collection successfully", func(t *testing.T) {
+		svc := newTestService(t)
+
+		newCol := pb.Collection{
+			Name: "Test Collection",
+		}
+
+		createResp, err := svc.CreateCollection(ctx, &pb.CreateCollectionRequest{
+			Collection: &newCol,
+		})
+		require.NoError(t, err)
+
+		resp, err := svc.GetCollection(ctx, &pb.CollectionId{Id: createResp.Data.Id})
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.OK, st.Code())
+
+		// Check content of response
+		assert.NotEmpty(t, resp.Data.Id)
+		assert.Equal(t, newCol.Name, resp.Data.Name)
+		assert.EqualValues(t, 0, resp.Data.ItemCount)
+	})
+
 	t.Run("get collection doesn't exists", func(t *testing.T) {
 		svc, store := newMockedService(t)
 
@@ -276,5 +299,52 @@ func TestUpdateCollection(t *testing.T) {
 
 		st := status.Convert(err)
 		assert.Equal(t, codes.Internal, st.Code())
+	})
+}
+
+func TestDeleteCollection(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("delete collection successfully", func(t *testing.T) {
+		svc := newTestService(t)
+
+		createResp, err := svc.CreateCollection(ctx, &pb.CreateCollectionRequest{
+			Collection: &pb.Collection{
+				Name: "Test Collection",
+			},
+		})
+		require.NoError(t, err)
+
+		_, err = svc.GetCollection(ctx, &pb.CollectionId{Id: createResp.Data.Id})
+		require.NoError(t, err)
+
+		resp, err := svc.DeleteCollection(ctx, &pb.CollectionId{Id: createResp.Data.Id})
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.OK, st.Code())
+		assert.Nil(t, resp)
+
+		_, err = svc.GetCollection(ctx, &pb.CollectionId{Id: createResp.Data.Id})
+
+		assert.Nil(t, resp)
+
+		st = status.Convert(err)
+		assert.Equal(t, codes.NotFound, st.Code())
+	})
+	t.Run("delete fails when collection not found", func(t *testing.T) {
+		svc, store := newMockedService(t)
+
+		// Return the sentinel error the service knows how to classify.
+		store.EXPECT().
+			DeleteCollection(mock.AnythingOfType("string")).
+			Return(storage.ErrCollectionNotFound)
+
+		resp, err := svc.DeleteCollection(ctx, &pb.CollectionId{})
+
+		require.Error(t, err)
+		assert.Nil(t, resp)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.NotFound, st.Code())
 	})
 }

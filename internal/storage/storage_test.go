@@ -470,8 +470,6 @@ func runItemCRUDTests(
 
 		listedItems, err := store.ListItemsByCollectionId(collectionId, nil)
 
-		fmt.Println(listedItems)
-
 		assert.Len(t, listedItems, 4)
 	})
 

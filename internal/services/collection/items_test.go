@@ -249,6 +249,35 @@ func TestCreateItems(t *testing.T) {
 func TestGetItem(t *testing.T) {
 	ctx := context.Background()
 
+	t.Run("get item successfully", func(t *testing.T) {
+		svc := newTestService(t)
+
+		collectionId := "test-col-id"
+
+		newItem := pb.Item{
+			Name: "Test Item",
+		}
+
+		createResp, err := svc.CreateItem(ctx, &pb.CreateItemRequest{
+			CollectionId: collectionId,
+			Item:         &newItem,
+		})
+		require.NoError(t, err)
+
+		resp, err := svc.GetItem(ctx, &pb.CollectionItemId{
+			Id:           createResp.Data.Id,
+			CollectionId: collectionId,
+		})
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.OK, st.Code())
+
+		// Check content of response
+		assert.NotEmpty(t, resp.Data.Id)
+		assert.Equal(t, newItem.Name, resp.Data.Name)
+		assert.Equal(t, collectionId, resp.Data.CollectionId)
+	})
+
 	t.Run("get item doesn't exists", func(t *testing.T) {
 		svc, store := newMockedService(t)
 
@@ -322,5 +351,66 @@ func TestUpdateItem(t *testing.T) {
 
 		st := status.Convert(err)
 		assert.Equal(t, codes.Internal, st.Code())
+	})
+}
+
+func TestDeleteItem(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("delete item successfully", func(t *testing.T) {
+		svc := newTestService(t)
+
+		collectionId := "test-col-id"
+
+		newItem := pb.Item{
+			Name: "Test Item",
+		}
+
+		createResp, err := svc.CreateItem(ctx, &pb.CreateItemRequest{
+			CollectionId: collectionId,
+			Item:         &newItem,
+		})
+		require.NoError(t, err)
+
+		_, err = svc.GetItem(ctx, &pb.CollectionItemId{
+			Id:           createResp.Data.Id,
+			CollectionId: collectionId,
+		})
+		require.NoError(t, err)
+
+		resp, err := svc.DeleteItem(ctx, &pb.CollectionItemId{
+			Id:           createResp.Data.Id,
+			CollectionId: collectionId,
+		})
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.OK, st.Code())
+		assert.Nil(t, resp)
+
+		_, err = svc.GetItem(ctx, &pb.CollectionItemId{
+			Id:           createResp.Data.Id,
+			CollectionId: collectionId,
+		})
+
+		assert.Nil(t, resp)
+
+		st = status.Convert(err)
+		assert.Equal(t, codes.NotFound, st.Code())
+	})
+	t.Run("delete fails when item not found", func(t *testing.T) {
+		svc, store := newMockedService(t)
+
+		// Return the sentinel error the service knows how to classify.
+		store.EXPECT().
+			DeleteItem(mock.AnythingOfType("string")).
+			Return(storage.ErrItemNotFound)
+
+		resp, err := svc.DeleteItem(ctx, &pb.CollectionItemId{})
+
+		require.Error(t, err)
+		assert.Nil(t, resp)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.NotFound, st.Code())
 	})
 }
