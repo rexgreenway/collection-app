@@ -105,7 +105,6 @@ func (s *CollectionService) GetItem(
 	req *pb.CollectionItemId,
 ) (*pb.GetItemResponse, error) {
 	id := req.GetId()
-	collectionId := req.GetCollectionId()
 
 	item, err := s.store.GetItem(id)
 	if err != nil {
@@ -155,7 +154,6 @@ func (s *CollectionService) DeleteItem(
 	req *pb.CollectionItemId,
 ) (*emptypb.Empty, error) {
 	id := req.GetId()
-	collectionId := req.GetCollectionId()
 
 	err := s.store.DeleteItem(id)
 	if err != nil {
