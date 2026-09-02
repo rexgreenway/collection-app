@@ -168,7 +168,7 @@ func TestCreateItems(t *testing.T) {
 		st := status.Convert(err)
 		assert.Equal(t, codes.OK, st.Code())
 
-		// Check content of repsonse
+		// Check content of response
 		assert.NotEmpty(t, resp.Data.Id)
 		assert.Equal(t, entities.DEFAULT_ITEM_NAME, resp.Data.Name)
 		assert.Equal(t, createColResp.Data.Id, resp.Data.CollectionId)

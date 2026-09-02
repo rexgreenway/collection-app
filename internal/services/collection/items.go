@@ -46,14 +46,26 @@ func (s *CollectionService) CreateItem(
 	req *pb.CreateItemRequest,
 ) (*pb.GetItemResponse, error) {
 	id := s.utils.NewId()
-	collectionId := req.GetCollectionId()
+	collectionId := req.CollectionId
+
+	itemReq := req.Item
+
+	var itemName string
+
+	if itemReq == nil {
+		itemName = entities.DEFAULT_ITEM_NAME
+	} else {
+		itemName = itemReq.Name
+	}
+
+	item := entities.Item{
+		Id:           id,
+		Name:         itemName,
+		CollectionId: collectionId,
+	}
 
 	// Create the actual item
-	item, err := s.store.CreateItem(entities.Item{
-		Id:           id,
-		Name:         req.Item.GetName(),
-		CollectionId: collectionId,
-	})
+	item, err := s.store.CreateItem(item)
 	if err != nil {
 		if errors.Is(err, storage.ErrItemAlreadyExists) {
 			return nil, status.Errorf(codes.AlreadyExists, "Item %q already exists", id)
@@ -71,7 +83,7 @@ func (s *CollectionService) CreateItems(
 	ctx context.Context,
 	req *pb.CreateItemsRequest,
 ) (*pb.ListItemsResponse, error) {
-	collectionId := req.GetCollectionId()
+	collectionId := req.CollectionId
 
 	var itemsToCreate []entities.Item
 	for _, reqItem := range req.GetItems() {
@@ -153,7 +165,7 @@ func (s *CollectionService) DeleteItem(
 	ctx context.Context,
 	req *pb.CollectionItemId,
 ) (*emptypb.Empty, error) {
-	id := req.GetId()
+	id := req.Id
 
 	err := s.store.DeleteItem(id)
 	if err != nil {
