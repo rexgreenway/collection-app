@@ -4,29 +4,19 @@ import (
 	"context"
 	"errors"
 
-	"github.com/google/uuid"
-	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
+	"github.com/rexgreenway/collection-app/internal/entities"
 	pb "github.com/rexgreenway/collection-app/internal/gen/v1/collection"
 	"github.com/rexgreenway/collection-app/internal/storage"
 )
 
-type collectionServer struct {
-	// This adds forward compatibility to this
-	// implementation of the server
-	pb.UnimplementedCollectionServiceServer
+// ------- Collection Methods -------
 
-	logger *zap.SugaredLogger
-
-	store storage.Store
-
-	cancel context.CancelFunc
-}
-
-func (s *collectionServer) ListCollections(
+// ListCollections ???
+func (s *CollectionService) ListCollections(
 	ctx context.Context,
 	req *pb.ListCollectionsRequest,
 ) (*pb.ListCollectionsResponse, error) {
@@ -48,11 +38,12 @@ func (s *collectionServer) ListCollections(
 	}, nil
 }
 
-func (s *collectionServer) CreateCollection(
+// CreateCollection ???
+func (s *CollectionService) CreateCollection(
 	ctx context.Context,
 	req *pb.CreateCollectionRequest,
 ) (*pb.GetCollectionResponse, error) {
-	id := uuid.NewString()
+	id := s.utils.NewId()
 
 	protoCollection := &pb.Collection{
 		Id:   id,
@@ -72,7 +63,8 @@ func (s *collectionServer) CreateCollection(
 	}, nil
 }
 
-func (s *collectionServer) GetCollection(
+// GetCollection ???
+func (s *CollectionService) GetCollection(
 	ctx context.Context,
 	req *pb.CollectionId,
 ) (*pb.GetCollectionResponse, error) {
@@ -86,24 +78,30 @@ func (s *collectionServer) GetCollection(
 		return nil, status.Errorf(codes.Internal, "GetCollection %q failed: %v", id, err)
 	}
 
-	itemCount := s.store.GetItemCountByCollection(id)
+	itemCount := s.store.GetItemCountByCollectionId(id)
 
 	return &pb.GetCollectionResponse{
 		Data: &pb.Collection{
-			Id:        collection.ID,
+			Id:        collection.Id,
 			Name:      collection.Name,
 			ItemCount: int32(itemCount),
 		},
 	}, nil
 }
 
-func (s *collectionServer) UpdateCollection(
+// UpdateCollection ???
+func (s *CollectionService) UpdateCollection(
 	ctx context.Context,
 	req *pb.UpdateCollectionRequest,
 ) (*pb.GetCollectionResponse, error) {
 	id := req.GetId()
 
-	collection, err := s.store.UpdateCollection(id, protoToCollection(req.GetCollection()))
+	collection, err := s.store.UpdateCollection(
+		id,
+		entities.CollectionUpdate{
+			Name: &req.GetCollection().Name,
+		},
+	)
 	if err != nil {
 		if errors.Is(err, storage.ErrCollectionNotFound) {
 			return nil, status.Errorf(codes.NotFound, "Collection %q not found", id)
@@ -116,7 +114,8 @@ func (s *collectionServer) UpdateCollection(
 	}, nil
 }
 
-func (s *collectionServer) DeleteCollection(
+// DeleteCollection ???
+func (s *CollectionService) DeleteCollection(
 	ctx context.Context,
 	req *pb.CollectionId,
 ) (*emptypb.Empty, error) {
@@ -131,8 +130,4 @@ func (s *collectionServer) DeleteCollection(
 	}
 
 	return nil, nil
-}
-
-func NewServer(logger *zap.SugaredLogger, store storage.Store) *collectionServer {
-	return &collectionServer{logger: logger, store: store}
 }

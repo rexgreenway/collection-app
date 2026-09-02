@@ -18,7 +18,6 @@
   "paths": {
     "/collections": {
       "get": {
-        "summary": "------- Collections -------",
         "operationId": "CollectionService_ListCollections",
         "responses": {
           "200": {
@@ -88,7 +87,6 @@
     },
     "/collections/{collectionId}/items": {
       "get": {
-        "summary": "------- Items -------",
         "operationId": "CollectionService_ListItems",
         "responses": {
           "200": {
@@ -459,6 +457,9 @@
         "id": {
           "type": "string",
           "readOnly": true
+        },
+        "collectionId": {
+          "type": "string"
         },
         "name": {
           "type": "string"

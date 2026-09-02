@@ -46,7 +46,12 @@ export declare type Item = Message<"v1.collection.Item"> & {
   id: string;
 
   /**
-   * @generated from field: string name = 2;
+   * @generated from field: string collection_id = 2;
+   */
+  collectionId: string;
+
+  /**
+   * @generated from field: string name = 3;
    */
   name: string;
 };

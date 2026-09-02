@@ -9,8 +9,9 @@ import "v1/collection/responses.proto";
 
 option go_package = "github.com/rexgreenway/collection-app/internal/gen/v1/collection";
 
+// ---> Go-esque Documentation here gets to the Swagger documentation ???
+
 service CollectionService {
-  // ------- Collections -------
   rpc ListCollections(ListCollectionsRequest) returns (ListCollectionsResponse) {
     option (google.api.http) = {get: "/collections"};
   }
@@ -37,7 +38,6 @@ service CollectionService {
     option (google.api.http) = {delete: "/collections/{id}"};
   }
 
-  // ------- Items -------
   rpc ListItems(ListItemsRequest) returns (ListItemsResponse) {
     option (google.api.http) = {get: "/collections/{collection_id}/items"};
   }

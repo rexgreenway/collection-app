@@ -37,13 +37,11 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CollectionServiceClient interface {
-	// ------- Collections -------
 	ListCollections(ctx context.Context, in *ListCollectionsRequest, opts ...grpc.CallOption) (*ListCollectionsResponse, error)
 	CreateCollection(ctx context.Context, in *CreateCollectionRequest, opts ...grpc.CallOption) (*GetCollectionResponse, error)
 	GetCollection(ctx context.Context, in *CollectionId, opts ...grpc.CallOption) (*GetCollectionResponse, error)
 	UpdateCollection(ctx context.Context, in *UpdateCollectionRequest, opts ...grpc.CallOption) (*GetCollectionResponse, error)
 	DeleteCollection(ctx context.Context, in *CollectionId, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// ------- Items -------
 	ListItems(ctx context.Context, in *ListItemsRequest, opts ...grpc.CallOption) (*ListItemsResponse, error)
 	CreateItem(ctx context.Context, in *CreateItemRequest, opts ...grpc.CallOption) (*GetItemResponse, error)
 	CreateItems(ctx context.Context, in *CreateItemsRequest, opts ...grpc.CallOption) (*ListItemsResponse, error)
@@ -174,13 +172,11 @@ func (c *collectionServiceClient) DeleteItem(ctx context.Context, in *Collection
 // All implementations should embed UnimplementedCollectionServiceServer
 // for forward compatibility.
 type CollectionServiceServer interface {
-	// ------- Collections -------
 	ListCollections(context.Context, *ListCollectionsRequest) (*ListCollectionsResponse, error)
 	CreateCollection(context.Context, *CreateCollectionRequest) (*GetCollectionResponse, error)
 	GetCollection(context.Context, *CollectionId) (*GetCollectionResponse, error)
 	UpdateCollection(context.Context, *UpdateCollectionRequest) (*GetCollectionResponse, error)
 	DeleteCollection(context.Context, *CollectionId) (*emptypb.Empty, error)
-	// ------- Items -------
 	ListItems(context.Context, *ListItemsRequest) (*ListItemsResponse, error)
 	CreateItem(context.Context, *CreateItemRequest) (*GetItemResponse, error)
 	CreateItems(context.Context, *CreateItemsRequest) (*ListItemsResponse, error)

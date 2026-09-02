@@ -26,7 +26,7 @@ buf generate
 - Running Locally:
 
 ```bash
-ENVIRONMENT=dev go run cmd/main.go
+ENVIRONMENT=development go run cmd/main.go
 ```
 
 ## Frontend
@@ -34,7 +34,7 @@ ENVIRONMENT=dev go run cmd/main.go
 - Running Locally:
 
 ```bash
-cd dev
+cd web
 pnpm dev
 ```
 

@@ -17,8 +17,6 @@ export declare const file_v1_collection_collection: GenFile;
  */
 export declare const CollectionService: GenService<{
   /**
-   * ------- Collections -------
-   *
    * @generated from rpc v1.collection.CollectionService.ListCollections
    */
   listCollections: {
@@ -59,8 +57,6 @@ export declare const CollectionService: GenService<{
     output: typeof EmptySchema;
   },
   /**
-   * ------- Items -------
-   *
    * @generated from rpc v1.collection.CollectionService.ListItems
    */
   listItems: {

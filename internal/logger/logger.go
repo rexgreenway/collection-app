@@ -3,26 +3,29 @@ package logger
 import (
 	"fmt"
 
+	"github.com/rexgreenway/collection-app/internal/config"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 var logger *zap.SugaredLogger
 
-type Config struct {
-	Environment string
-}
-
 // FromConfig returns sugared logger provided with a configuration.
-func FromConfig(config *Config) (*zap.SugaredLogger, error) {
+func FromConfig(cfg *config.Config) (*zap.SugaredLogger, error) {
 	var l *zap.Logger
 
-	switch config.Environment {
-	case "dev":
-		l = zap.Must(zap.NewDevelopment())
-	case "prod":
+	switch cfg.Environment {
+
+	case config.DEVELOPMENT:
+		config := zap.NewDevelopmentConfig()
+		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		l = zap.Must(config.Build())
+
+	case config.PRODUCTION:
 		l = zap.Must(zap.NewProduction())
+
 	default:
-		return nil, fmt.Errorf("no such environment %q", config.Environment)
+		return nil, fmt.Errorf("no such environment %q", cfg.Environment)
 	}
 
 	logger = l.Sugar()
