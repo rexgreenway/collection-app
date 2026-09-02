@@ -9,89 +9,76 @@ import { file_v1_collection_types } from "./types_pb";
 /**
  * Describes the file v1/collection/requests.proto.
  */
-export const file_v1_collection_requests =
-  /*@__PURE__*/
-  fileDesc(
-    "Chx2MS9jb2xsZWN0aW9uL3JlcXVlc3RzLnByb3RvEg12MS5jb2xsZWN0aW9uIh8KDENvbGxlY3Rpb25JZBIPCgJpZBgBIAEoCUID4EECIj8KEENvbGxlY3Rpb25JdGVtSWQSDwoCaWQYASABKAlCA+BBAhIaCg1jb2xsZWN0aW9uX2lkGAIgASgJQgPgQQIiPQoQUGFnaW5hdGlvblBhcmFtcxIWCglwYWdlX3NpemUYASABKAVCA+BBAhIRCgRwYWdlGAIgASgFQgPgQQIiZgoWTGlzdENvbGxlY3Rpb25zUmVxdWVzdBI9CgpwYWdpbmF0aW9uGAIgASgLMh8udjEuY29sbGVjdGlvbi5QYWdpbmF0aW9uUGFyYW1zQgPgQQFIAIgBAUINCgtfcGFnaW5hdGlvbiJNChdDcmVhdGVDb2xsZWN0aW9uUmVxdWVzdBIyCgpjb2xsZWN0aW9uGAEgASgLMhkudjEuY29sbGVjdGlvbi5Db2xsZWN0aW9uQgPgQQIiXgoXVXBkYXRlQ29sbGVjdGlvblJlcXVlc3QSDwoCaWQYASABKAlCA+BBAhIyCgpjb2xsZWN0aW9uGAIgASgLMhkudjEuY29sbGVjdGlvbi5Db2xsZWN0aW9uQgPgQQIifAoQTGlzdEl0ZW1zUmVxdWVzdBIaCg1jb2xsZWN0aW9uX2lkGAEgASgJQgPgQQISPQoKcGFnaW5hdGlvbhgCIAEoCzIfLnYxLmNvbGxlY3Rpb24uUGFnaW5hdGlvblBhcmFtc0ID4EEBSACIAQFCDQoLX3BhZ2luYXRpb24iVwoRQ3JlYXRlSXRlbVJlcXVlc3QSGgoNY29sbGVjdGlvbl9pZBgBIAEoCUID4EECEiYKBGl0ZW0YAiABKAsyEy52MS5jb2xsZWN0aW9uLkl0ZW1CA+BBAiJZChJDcmVhdGVJdGVtc1JlcXVlc3QSGgoNY29sbGVjdGlvbl9pZBgBIAEoCUID4EECEicKBWl0ZW1zGAIgAygLMhMudjEuY29sbGVjdGlvbi5JdGVtQgPgQQIiaAoRVXBkYXRlSXRlbVJlcXVlc3QSDwoCaWQYASABKAlCA+BBAhIaCg1jb2xsZWN0aW9uX2lkGAIgASgJQgPgQQISJgoEaXRlbRgDIAEoCzITLnYxLmNvbGxlY3Rpb24uSXRlbUID4EECQrkBChFjb20udjEuY29sbGVjdGlvbkINUmVxdWVzdHNQcm90b1ABWkBnaXRodWIuY29tL3JleGdyZWVud2F5L2NvbGxlY3Rpb24tYXBwL2ludGVybmFsL2dlbi92MS9jb2xsZWN0aW9uogIDVkNYqgINVjEuQ29sbGVjdGlvbsoCDVYxXENvbGxlY3Rpb27iAhlWMVxDb2xsZWN0aW9uXEdQQk1ldGFkYXRh6gIOVjE6OkNvbGxlY3Rpb25iBnByb3RvMw",
-    [file_google_api_field_behavior, file_v1_collection_types],
-  );
+export const file_v1_collection_requests = /*@__PURE__*/
+  fileDesc("Chx2MS9jb2xsZWN0aW9uL3JlcXVlc3RzLnByb3RvEg12MS5jb2xsZWN0aW9uIh8KDENvbGxlY3Rpb25JZBIPCgJpZBgBIAEoCUID4EECIj8KEENvbGxlY3Rpb25JdGVtSWQSDwoCaWQYASABKAlCA+BBAhIaCg1jb2xsZWN0aW9uX2lkGAIgASgJQgPgQQIiPQoQUGFnaW5hdGlvblBhcmFtcxIWCglwYWdlX3NpemUYASABKAVCA+BBAhIRCgRwYWdlGAIgASgFQgPgQQIiZgoWTGlzdENvbGxlY3Rpb25zUmVxdWVzdBI9CgpwYWdpbmF0aW9uGAIgASgLMh8udjEuY29sbGVjdGlvbi5QYWdpbmF0aW9uUGFyYW1zQgPgQQFIAIgBAUINCgtfcGFnaW5hdGlvbiJNChdDcmVhdGVDb2xsZWN0aW9uUmVxdWVzdBIyCgpjb2xsZWN0aW9uGAEgASgLMhkudjEuY29sbGVjdGlvbi5Db2xsZWN0aW9uQgPgQQIiXgoXVXBkYXRlQ29sbGVjdGlvblJlcXVlc3QSDwoCaWQYASABKAlCA+BBAhIyCgpjb2xsZWN0aW9uGAIgASgLMhkudjEuY29sbGVjdGlvbi5Db2xsZWN0aW9uQgPgQQIifAoQTGlzdEl0ZW1zUmVxdWVzdBIaCg1jb2xsZWN0aW9uX2lkGAEgASgJQgPgQQISPQoKcGFnaW5hdGlvbhgCIAEoCzIfLnYxLmNvbGxlY3Rpb24uUGFnaW5hdGlvblBhcmFtc0ID4EEBSACIAQFCDQoLX3BhZ2luYXRpb24iVwoRQ3JlYXRlSXRlbVJlcXVlc3QSGgoNY29sbGVjdGlvbl9pZBgBIAEoCUID4EECEiYKBGl0ZW0YAiABKAsyEy52MS5jb2xsZWN0aW9uLkl0ZW1CA+BBAiJZChJDcmVhdGVJdGVtc1JlcXVlc3QSGgoNY29sbGVjdGlvbl9pZBgBIAEoCUID4EECEicKBWl0ZW1zGAIgAygLMhMudjEuY29sbGVjdGlvbi5JdGVtQgPgQQIiaAoRVXBkYXRlSXRlbVJlcXVlc3QSDwoCaWQYASABKAlCA+BBAhIaCg1jb2xsZWN0aW9uX2lkGAIgASgJQgPgQQISJgoEaXRlbRgDIAEoCzITLnYxLmNvbGxlY3Rpb24uSXRlbUID4EECQrkBChFjb20udjEuY29sbGVjdGlvbkINUmVxdWVzdHNQcm90b1ABWkBnaXRodWIuY29tL3JleGdyZWVud2F5L2NvbGxlY3Rpb24tYXBwL2ludGVybmFsL2dlbi92MS9jb2xsZWN0aW9uogIDVkNYqgINVjEuQ29sbGVjdGlvbsoCDVYxXENvbGxlY3Rpb27iAhlWMVxDb2xsZWN0aW9uXEdQQk1ldGFkYXRh6gIOVjE6OkNvbGxlY3Rpb25iBnByb3RvMw", [file_google_api_field_behavior, file_v1_collection_types]);
 
 /**
  * Describes the message v1.collection.CollectionId.
  * Use `create(CollectionIdSchema)` to create a new message.
  */
-export const CollectionIdSchema =
-  /*@__PURE__*/
+export const CollectionIdSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_requests, 0);
 
 /**
  * Describes the message v1.collection.CollectionItemId.
  * Use `create(CollectionItemIdSchema)` to create a new message.
  */
-export const CollectionItemIdSchema =
-  /*@__PURE__*/
+export const CollectionItemIdSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_requests, 1);
 
 /**
  * Describes the message v1.collection.PaginationParams.
  * Use `create(PaginationParamsSchema)` to create a new message.
  */
-export const PaginationParamsSchema =
-  /*@__PURE__*/
+export const PaginationParamsSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_requests, 2);
 
 /**
  * Describes the message v1.collection.ListCollectionsRequest.
  * Use `create(ListCollectionsRequestSchema)` to create a new message.
  */
-export const ListCollectionsRequestSchema =
-  /*@__PURE__*/
+export const ListCollectionsRequestSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_requests, 3);
 
 /**
  * Describes the message v1.collection.CreateCollectionRequest.
  * Use `create(CreateCollectionRequestSchema)` to create a new message.
  */
-export const CreateCollectionRequestSchema =
-  /*@__PURE__*/
+export const CreateCollectionRequestSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_requests, 4);
 
 /**
  * Describes the message v1.collection.UpdateCollectionRequest.
  * Use `create(UpdateCollectionRequestSchema)` to create a new message.
  */
-export const UpdateCollectionRequestSchema =
-  /*@__PURE__*/
+export const UpdateCollectionRequestSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_requests, 5);
 
 /**
  * Describes the message v1.collection.ListItemsRequest.
  * Use `create(ListItemsRequestSchema)` to create a new message.
  */
-export const ListItemsRequestSchema =
-  /*@__PURE__*/
+export const ListItemsRequestSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_requests, 6);
 
 /**
  * Describes the message v1.collection.CreateItemRequest.
  * Use `create(CreateItemRequestSchema)` to create a new message.
  */
-export const CreateItemRequestSchema =
-  /*@__PURE__*/
+export const CreateItemRequestSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_requests, 7);
 
 /**
  * Describes the message v1.collection.CreateItemsRequest.
  * Use `create(CreateItemsRequestSchema)` to create a new message.
  */
-export const CreateItemsRequestSchema =
-  /*@__PURE__*/
+export const CreateItemsRequestSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_requests, 8);
 
 /**
  * Describes the message v1.collection.UpdateItemRequest.
  * Use `create(UpdateItemRequestSchema)` to create a new message.
  */
-export const UpdateItemRequestSchema =
-  /*@__PURE__*/
+export const UpdateItemRequestSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_requests, 9);
+

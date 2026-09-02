@@ -7,12 +7,11 @@
 package collection
 
 import (
-	reflect "reflect"
-	sync "sync"
-
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	sync "sync"
 )
 
 const (
@@ -642,23 +641,21 @@ func file_v1_collection_requests_proto_rawDescGZIP() []byte {
 	return file_v1_collection_requests_proto_rawDescData
 }
 
-var (
-	file_v1_collection_requests_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
-	file_v1_collection_requests_proto_goTypes  = []any{
-		(*CollectionId)(nil),            // 0: v1.collection.CollectionId
-		(*CollectionItemId)(nil),        // 1: v1.collection.CollectionItemId
-		(*PaginationParams)(nil),        // 2: v1.collection.PaginationParams
-		(*ListCollectionsRequest)(nil),  // 3: v1.collection.ListCollectionsRequest
-		(*CreateCollectionRequest)(nil), // 4: v1.collection.CreateCollectionRequest
-		(*UpdateCollectionRequest)(nil), // 5: v1.collection.UpdateCollectionRequest
-		(*ListItemsRequest)(nil),        // 6: v1.collection.ListItemsRequest
-		(*CreateItemRequest)(nil),       // 7: v1.collection.CreateItemRequest
-		(*CreateItemsRequest)(nil),      // 8: v1.collection.CreateItemsRequest
-		(*UpdateItemRequest)(nil),       // 9: v1.collection.UpdateItemRequest
-		(*Collection)(nil),              // 10: v1.collection.Collection
-		(*Item)(nil),                    // 11: v1.collection.Item
-	}
-)
+var file_v1_collection_requests_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_v1_collection_requests_proto_goTypes = []any{
+	(*CollectionId)(nil),            // 0: v1.collection.CollectionId
+	(*CollectionItemId)(nil),        // 1: v1.collection.CollectionItemId
+	(*PaginationParams)(nil),        // 2: v1.collection.PaginationParams
+	(*ListCollectionsRequest)(nil),  // 3: v1.collection.ListCollectionsRequest
+	(*CreateCollectionRequest)(nil), // 4: v1.collection.CreateCollectionRequest
+	(*UpdateCollectionRequest)(nil), // 5: v1.collection.UpdateCollectionRequest
+	(*ListItemsRequest)(nil),        // 6: v1.collection.ListItemsRequest
+	(*CreateItemRequest)(nil),       // 7: v1.collection.CreateItemRequest
+	(*CreateItemsRequest)(nil),      // 8: v1.collection.CreateItemsRequest
+	(*UpdateItemRequest)(nil),       // 9: v1.collection.UpdateItemRequest
+	(*Collection)(nil),              // 10: v1.collection.Collection
+	(*Item)(nil),                    // 11: v1.collection.Item
+}
 var file_v1_collection_requests_proto_depIdxs = []int32{
 	2,  // 0: v1.collection.ListCollectionsRequest.pagination:type_name -> v1.collection.PaginationParams
 	10, // 1: v1.collection.CreateCollectionRequest.collection:type_name -> v1.collection.Collection

@@ -8,25 +8,20 @@ import { file_google_api_field_behavior } from "../../google/api/field_behavior_
 /**
  * Describes the file v1/collection/types.proto.
  */
-export const file_v1_collection_types =
-  /*@__PURE__*/
-  fileDesc(
-    "Chl2MS9jb2xsZWN0aW9uL3R5cGVzLnByb3RvEg12MS5jb2xsZWN0aW9uIkcKCkNvbGxlY3Rpb24SEgoCaWQYASABKAlCBuBBCOBBAxIMCgRuYW1lGAIgASgJEhcKCml0ZW1fY291bnQYAyABKAVCA+BBAyIoCgRJdGVtEhIKAmlkGAEgASgJQgbgQQjgQQMSDAoEbmFtZRgCIAEoCUK2AQoRY29tLnYxLmNvbGxlY3Rpb25CClR5cGVzUHJvdG9QAVpAZ2l0aHViLmNvbS9yZXhncmVlbndheS9jb2xsZWN0aW9uLWFwcC9pbnRlcm5hbC9nZW4vdjEvY29sbGVjdGlvbqICA1ZDWKoCDVYxLkNvbGxlY3Rpb27KAg1WMVxDb2xsZWN0aW9u4gIZVjFcQ29sbGVjdGlvblxHUEJNZXRhZGF0YeoCDlYxOjpDb2xsZWN0aW9uYgZwcm90bzM",
-    [file_google_api_field_behavior],
-  );
+export const file_v1_collection_types = /*@__PURE__*/
+  fileDesc("Chl2MS9jb2xsZWN0aW9uL3R5cGVzLnByb3RvEg12MS5jb2xsZWN0aW9uIkcKCkNvbGxlY3Rpb24SEgoCaWQYASABKAlCBuBBCOBBAxIMCgRuYW1lGAIgASgJEhcKCml0ZW1fY291bnQYAyABKAVCA+BBAyI/CgRJdGVtEhIKAmlkGAEgASgJQgbgQQjgQQMSFQoNY29sbGVjdGlvbl9pZBgCIAEoCRIMCgRuYW1lGAMgASgJQrYBChFjb20udjEuY29sbGVjdGlvbkIKVHlwZXNQcm90b1ABWkBnaXRodWIuY29tL3JleGdyZWVud2F5L2NvbGxlY3Rpb24tYXBwL2ludGVybmFsL2dlbi92MS9jb2xsZWN0aW9uogIDVkNYqgINVjEuQ29sbGVjdGlvbsoCDVYxXENvbGxlY3Rpb27iAhlWMVxDb2xsZWN0aW9uXEdQQk1ldGFkYXRh6gIOVjE6OkNvbGxlY3Rpb25iBnByb3RvMw", [file_google_api_field_behavior]);
 
 /**
  * Describes the message v1.collection.Collection.
  * Use `create(CollectionSchema)` to create a new message.
  */
-export const CollectionSchema =
-  /*@__PURE__*/
+export const CollectionSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_types, 0);
 
 /**
  * Describes the message v1.collection.Item.
  * Use `create(ItemSchema)` to create a new message.
  */
-export const ItemSchema =
-  /*@__PURE__*/
+export const ItemSchema = /*@__PURE__*/
   messageDesc(file_v1_collection_types, 1);
+
